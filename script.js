@@ -1,15 +1,29 @@
 document.addEventListener('DOMContentLoaded', () => {
+
+    // =========================================================================
+    // 1. DICIONÁRIO DE ENDPOINTS POR LOJA
+    // Mapeia o nome da loja (valor do SELECT) diretamente para a URL correta.
+    // =========================================================================
     
-    // =========================================================================
-    // 1. DICIONÁRIO DE ENDPOINTS (Web App URLs)
-    // ATENÇÃO: Confirme se essas URLs são as corretas para a Planilha Antiga e a Planilha Nova.
-    // =========================================================================
-    const scriptEndpoints = {
-        // 'grupo_1' (Lojas 02, 12, 13, 15, 16) - SUA URL ORIGINAL
-        'grupo_1': 'https://script.google.com/macros/s/AKfycbzNEaGuuffVK7oD5kcyJDEcFxWCM2k_6JrbRWkfFQ0_VwKThTqosy45F84-TbVrmyhRlg/exec',
-        
-        // 'grupo_2' (Lojas 05, 09, 10, 14) - SUA NOVA URL
-        'grupo_2': 'https://script.google.com/macros/s/AKfycbzFiupzPyg7941a_JmyhgQSVkiYiKqtz8Vxq8ZFsuy80h8SniHAY7calpSIL-nMSzOdtQ/exec'
+    // URL da Planilha Antiga (Lojas 02, 12, 13, 15, 16)
+    const URL_PLANILHA_ANTIGA = 'https://script.google.com/macros/s/AKfycbzNEaGuuffVK7oD5kcyJDEcFxWCM2k_6JrbRWkfFQ0_VwKThTqosy45F84-TbVrmyhRlg/exec'; 
+    
+    // URL da Planilha Nova (Lojas 05, 09, 10, 14)
+    const URL_PLANILHA_NOVA = 'https://script.google.com/macros/s/AKfycbzFiupzPyg7941a_JmyhgQSVkiYiKqtz8Vxq8ZFsuy80h8SniHAY7calpSIL-nMSzOdtQ/exec';
+
+    const lojaEndpoints = {
+        // Mapeamento para URL Antiga
+        '02 - Morada': URL_PLANILHA_ANTIGA,
+        '12 - Elias Fausto': URL_PLANILHA_ANTIGA,
+        '13 - Maria José': URL_PLANILHA_ANTIGA,
+        '15 - Salto': URL_PLANILHA_ANTIGA,
+        '16 - Itu': URL_PLANILHA_ANTIGA,
+
+        // Mapeamento para URL Nova
+        '05 - Visconde': URL_PLANILHA_NOVA,
+        '09 - Vinhedo': URL_PLANILHA_NOVA,
+        '10 - Conceição': URL_PLANILHA_NOVA,
+        '14 - Paula Leite': URL_PLANILHA_NOVA
     };
 
     const lacreInput = document.getElementById('lacre');
@@ -17,9 +31,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('lacreForm');
     const successMessageDiv = document.getElementById('successMessage');
     const novoRegistroBtn = document.getElementById('novoRegistroBtn');
-    const grupoLojaInput = document.getElementById('grupo_loja'); 
+    const lojaSelect = document.getElementById('loja'); // O select de loja
     
-    // Funções para impedir copiar/colar e menu de contexto
+    // Funções para impedir copiar/colar e menu de contexto (MANTIDAS)
     const preventAction = (e) => {
         e.preventDefault();
         alert('Copiar, colar ou cortar não é permitido neste campo. Por favor, digite o número.');
@@ -38,16 +52,16 @@ document.addEventListener('DOMContentLoaded', () => {
         // 1. Pega os valores
         const lacre = lacreInput.value;
         const confirmarLacre = confirmarLacreInput.value;
-        const loja = document.getElementById('loja').value;
+        const loja = lojaSelect.value; // Pega a loja selecionada
         const operador = document.getElementById('operador').value;
-        const selectedGroup = grupoLojaInput.value; // Pega o grupo selecionado
         
-        // 2. Determina o Endpoint
-        const appsScriptUrl = scriptEndpoints[selectedGroup];
+        // 2. Determina o Endpoint com base na Loja Selecionada
+        // Se a loja não estiver no mapa, o valor será undefined, o que é um erro.
+        const appsScriptUrl = lojaEndpoints[loja]; 
 
-        // 3. Validação do Grupo de Loja
+        // 3. Validação do Roteamento
         if (!appsScriptUrl) {
-            alert('Atenção: Por favor, selecione o Grupo de Lojas (Destino).');
+            alert('Atenção: A loja selecionada não possui um destino de planilha válido. Contate o suporte.');
             return;
         }
 
@@ -73,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 6. Envia os dados para o endpoint correto
         try {
-            const response = await fetch(appsScriptUrl, {
+            const response = await fetch(appsScriptUrl, { // Usa a URL roteada!
                 method: 'POST',
                 headers: {
                     'Content-Type': 'text/plain;charset=utf-8',
@@ -82,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (response.ok) {
-                // Se der certo, esconde o formulário e mostra a mensagem de sucesso
+                // Sucesso
                 form.style.display = 'none';
                 successMessageDiv.style.display = 'block';
             } else {
@@ -101,8 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
         form.reset();
         lacreInput.style.borderColor = '';
         confirmarLacreInput.style.borderColor = '';
-        // Limpa os selects após o reset do form
-        grupoLojaInput.value = "";
-        document.getElementById('loja').value = "";
+        // Limpa o select
+        lojaSelect.value = ""; 
     });
 });
