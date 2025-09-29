@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Lacre</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="logo-container">
+            <img src="logo-tamandare.png" alt="Logo Tamandaré Tintas">
+        </div>
+        <h1>Registro de Lacre</h1>
+        
+        <form id="lacreForm">
+            <div class="form-field">
+                <label for="lacre">Número do Lacre:</label>
+                <input type="text" id="lacre" required>
+            </div>
+
+            <div class="form-field">
+                <label for="confirmar-lacre">Confirmar Lacre:</label>
+                <input type="text" id="confirmar-lacre" required>
+            </div>
+
+            <div class="form-field">
+                <label for="loja">Loja:</label>
+                <select id="loja" required>
+                    <option value="" disabled selected>Selecione a Loja</option>
+                    <option value="02 - Morada">02 - Morada</option>
+                    <option value="05 - Visconde">05 - Visconde</option>
+                    <option value="09 - Vinhedo">09 - Vinhedo</option>
+                    <option value="10 - Conceição">10 - Conceição</option>
+                    <option value="12 - Elias Fausto">12 - Elias Fausto</option>
+                    <option value="13 - Maria José">13 - Maria José</option>
+                    <option value="14 - Paula Leite">14 - Paula Leite</option>
+                    <option value="15 - Salto">15 - Salto</option>
+                    <option value="16 - Itu">16 - Itu</option>
+                </select>
+            </div>
+
+            <div class="form-field">
+                <label for="operador">Operador:</label>
+                <input type="text" id="operador" required>
+            </div>
+
+            <button type="submit">Registrar Lacre</button>
+        </form>
+
+        <div id="successMessage" style="display:none; text-align: center;">
+            <p style="font-size: 24px; font-weight: bold; color: #007bff;">Lacre registrado com sucesso!</p>
+            <button id="novoRegistroBtn">Novo Registro</button>
+        </div>
+    </div>
+
+    <div class="footer">
+        © 2025 Tamandaré Tintas. Todos os direitos reservados.
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
