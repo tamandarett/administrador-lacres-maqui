@@ -120,24 +120,25 @@ button[type="submit"]:hover {
     box-sizing: border-box;
 }
 
+/* NOVO: Azul Marinho Escuro para Tamandaré */
 .main-button.tamandare {
-    background-color: #007bff; /* Azul, cor principal */
+    background-color: #003366; /* Azul Marinho Escuro */
 }
 
 .main-button.tamandare:hover {
-    background-color: #0056b3; 
+    background-color: #001f3f; /* Mais escuro no hover */
 }
 
+/* NOVO: Verde Escuro para Marqui & Venturini */
 .main-button.marqui {
-    background-color: #ffc107; /* Amarelo/Laranja para contraste */
-    color: #333 !important;
+    background-color: #1a531a; /* Verde Floresta Escuro */
+    color: #fff !important; /* Certifica que o texto é branco */
 }
 
 .main-button.marqui:hover {
-    background-color: #e0a800;
+    background-color: #0d330d;
 }
 
-/* Garante que o título na nova página seja azul também */
 h1 {
-    color: #007bff;
+    color: #007bff; /* Mantém o azul principal para o título */
 }
