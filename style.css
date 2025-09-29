@@ -48,13 +48,23 @@ label {
     font-weight: bold;
 }
 
-input[type="text"] {
+/* Aplica o estilo tanto para input quanto para select */
+input[type="text"], 
+select { 
     width: 100%;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
     box-sizing: border-box;
-    font-size: 16px;
+    
+    /* Garante a mesma fonte e tamanho do input */
+    font-size: 16px; 
+    font-family: Arial, sans-serif; /* Garante que a fonte seja a mesma do corpo */
+    
+    /* Remove a aparência padrão (opcional, mas bom para simetria) */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
 }
 
 button {
