@@ -98,44 +98,32 @@ button[type="submit"]:hover {
 
 /* --- Estilos para a página de Conferência (BOTOÕES) --- */
 
-.button-container {
-    display: flex;
-    flex-direction: column; 
-    gap: 15px; 
-    margin-top: 30px;
+.loja-buttons-grid {
+    display: grid;
+    /* Divide a área em duas colunas de tamanhos iguais */
+    grid-template-columns: 1fr 1fr; 
+    gap: 10px; /* Espaço entre os botões pequenos */
+    margin-top: 10px;
 }
 
-.main-button {
-    width: 100%;
-    padding: 15px; 
-    border: none;
+.loja-button {
+    /* Estilo para os 9 botões menores */
+    display: block; 
+    padding: 8px 5px; 
     border-radius: 4px;
-    font-size: 18px;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
     cursor: pointer;
     transition: background-color 0.3s ease;
     
-    text-decoration: none; 
-    color: #fff !important; 
-    font-weight: bold;
-    text-align: center;
-    box-sizing: border-box;
+    /* Cores Neutras: Cinza com texto escuro para visual limpo */
+    background-color: #e9ecef; /* Cinza claro */
+    color: #343a40 !important; /* Texto cinza escuro */
+    border: 1px solid #ced4da;
 }
 
-/* Azul Marinho Escuro para Tamandaré */
-.main-button.tamandare {
-    background-color: #003366; 
-}
-
-.main-button.tamandare:hover {
-    background-color: #001f3f; 
-}
-
-/* Verde Escuro para Marqui & Venturini */
-.main-button.marqui {
-    background-color: #1a531a; 
-    color: #fff !important; 
-}
-
-.main-button.marqui:hover {
-    background-color: #0d330d;
+.loja-button:hover {
+    background-color: #ced4da; /* Escurece um pouco no hover */
 }
