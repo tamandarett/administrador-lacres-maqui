@@ -105,14 +105,22 @@ button[type="submit"]:hover {
     font-weight: bold;
 }
 
-/* CORREÇÃO: Layout de Lista Vertical Espaçada (display: flex + column) */
-.loja-list-container {
+/* 1. NOVO CONTAINER PRINCIPAL: Coloca as duas colunas lado a lado */
+.loja-columns-container {
     display: flex;
-    flex-direction: column; /* Coloca os botões um abaixo do outro */
-    align-items: stretch; /* Garante que os botões usem 100% da largura */
-    gap: 15px; /* Espaço entre os botões */
+    justify-content: space-between; /* Espaçamento entre as duas colunas */
+    gap: 15px; /* Espaço entre as duas colunas */
     margin-top: 15px;
-    width: 100%; 
+    width: 100%;
+}
+
+/* 2. Estilo de CADA COLUNA (cria a lista vertical) */
+.loja-column {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 50%; /* Faz com que cada coluna ocupe metade do espaço */
+    gap: 15px; /* Espaço entre os botões dentro de CADA coluna */
 }
 
 .loja-button {
@@ -135,6 +143,9 @@ button[type="submit"]:hover {
     border: 1px solid #ced4da;
     border-radius: 4px;
     box-sizing: border-box; 
+    
+    /* Garante que o texto se alinhe corretamente e tenha espaço suficiente */
+    line-height: 1.2; 
 }
 
 .loja-button:hover {
