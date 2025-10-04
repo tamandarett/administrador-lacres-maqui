@@ -105,13 +105,12 @@ button[type="submit"]:hover {
     font-weight: bold;
 }
 
-/* ATUALIZADO: Contêiner de botões agora usa GRID de duas colunas */
+/* CORREÇÃO: Layout de Lista Vertical Espaçada (display: flex + column) */
 .loja-list-container {
-    display: grid;
-    /* Divide em duas colunas de tamanho igual */
-    grid-template-columns: 1fr 1fr;
-    /* Espaçamento entre as linhas e colunas */
-    gap: 12px 15px; 
+    display: flex;
+    flex-direction: column; /* Coloca os botões um abaixo do outro */
+    align-items: stretch; /* Garante que os botões usem 100% da largura */
+    gap: 15px; /* Espaço entre os botões */
     margin-top: 15px;
     width: 100%; 
 }
