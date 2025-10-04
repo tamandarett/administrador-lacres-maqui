@@ -6,16 +6,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================================================
     
     const lojaEndpoints = {
-        // As chaves DEVEM ser idênticas aos valores das opções do HTML
-        [cite_start]'02 - Morada': 'https://script.google.com/macros/s/AKfycbzNEaGuuffVK7oD5kcyJDEcFxWCM2k_6JrbRWkfFQ0_VwKThTqosy45F84-TbVrmyhRlg/exec', [cite: 1]
-        [cite_start]'05 - Visconde': 'https://script.google.com/macros/s/AKfycbx5H2lPfVNnVwRbf1INEaZ1DZr12KE2zH5w7IZqyXKWA1SjYCBkpHj1oPNyd24yzSQ/exec', [cite: 7]
-        [cite_start]'09 - Vinhedo': 'https://script.google.com/macros/s/AKfycbzFiupzPyg7941a_JmyhgQSVkiYiKqtz8Vxq8ZFsuy80h8SniHAY7calpSIL-nMSzOdtQ/exec', [cite: 8]
-        [cite_start]'10 - Conceição': 'https://script.google.com/macros/s/AKfycby_3QL9-xL_cGbKkMzbRr5GAZQ-jzu6P9fpjF9pp63lyYqStbabbxm7y0JAM4ALIxKnc/exec', [cite: 10]
-        [cite_start]'12 - Elias Fausto': 'https://script.google.com/macros/s/AKfycbxyjitPDPUJalWxcnFkT2h1pf9_PAQlslFkNAxA4KZ0aTCSUg9Sn_7vGLB8T3CC4BwH/exec', [cite: 2]
-        [cite_start]'13 - Maria José': 'https://script.google.com/macros/s/AKfycbx00ywLtjI7QmXgiHcebssfl0cV8vOSZ-Pug3ZlQ0Dlb_G7vYGdBS9BQGN6ce1T-YhacQ/exec', [cite: 3]
-        [cite_start]'14 - Paula Leite': 'https://script.google.com/macros/s/AKfycbzexRszc2yOtSZtv0aznkNfkC3gROl229ToeHQ1ui5QhazZ-lAmOo3vDBPPcV4FxY6u/exec', [cite: 11]
-        [cite_start]'15 - Salto': 'https://script.google.com/macros/s/AKfycbyVF62kF-gPgheKQI8B3kN9hGu0RXisr5-KI76s31FTYdOu8kBq4F3aBkYMbM5UHSrI/exec', [cite: 5]
-        [cite_start]'16 - Itu': 'https://script.google.com/macros/s/AKfycbzz3XjqXVo9gl7KgYDNdzBHF89UID7xv-5ZUjBKTJc2277rqfEpdt-EfS8fJAIw_nfH/exec' [cite: 6]
+        '02 - Morada': 'https://script.google.com/macros/s/AKfycbzNEaGuuffVK7oD5kcyJDEcFxWCM2k_6JrbRWkfFQ0_VwKThTqosy45F84-TbVrmyhRlg/exec',
+        '05 - Visconde': 'https://script.google.com/macros/s/AKfycbx5H2lPfVNnVwRbf1INEaZ1DZr12KE2zH5w7IZqyXKWA1SjYCBkpHj1oPNyd24yzSQ/exec',
+        '09 - Vinhedo': 'https://script.google.com/macros/s/AKfycbzFiupzPyg7941a_JmyhgQSVkiYiKqtz8Vxq8ZFsuy80h8SniHAY7calpSIL-nMSzOdtQ/exec',
+        '10 - Conceição': 'https://script.google.com/macros/s/AKfycby_3QL9-xL_cGbKkMzbRr5GAZQ-jzu6P9fpjF9pp63lyYqStbabbxm7y0JAM4ALIxKnc/exec',
+        '12 - Elias Fausto': 'https://script.google.com/macros/s/AKfycbxyjitPDPUJalWxcnFkT2h1pf9_PAQlslFkNAxA4KZ0aTCSUg9Sn_7vGLB8T3CC4BwH/exec',
+        '13 - Maria José': 'https://script.google.com/macros/s/AKfycbx00ywLtjI7QmXgiHcebssfl0cV8vOSZ-Pug3ZlQ0Dlb_G7vYGdBS9BQGN6ce1T-YhacQ/exec',
+        '14 - Paula Leite': 'https://script.google.com/macros/s/AKfycbzexRszc2yOtSZtv0aznkNfkC3gROl229ToeHQ1ui5QhazZ-lAmOo3vDBPPcV4FxY6u/exec',
+        '15 - Salto': 'https://script.google.com/macros/s/AKfycbyVF62kF-gPgheKQI8B3kN9hGu0RXisr5-KI76s31FTYdOu8kBq4F3aBkYMbM5UHSrI/exec',
+        '16 - Itu': 'https://script.google.com/macros/s/AKfycbzz3XjqXVo9gl7KgYDNdzBHF89UID7xv-5ZUjBKTJc2277rqfEpdt-EfS8fJAIw_nfH/exec'
     };
 
     const lacreInput = document.getElementById('lacre');
@@ -50,13 +49,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // 2. Determina o Endpoint com base na Loja Selecionada
         const appsScriptUrl = lojaEndpoints[loja];
         
-        // =========================================================
-        // PONTO DE DEBUG: Verifique estas mensagens no Console
-        // =========================================================
+        // PONTO DE DEBUG
         console.log('--- Tentativa de Envio ---');
         console.log('Loja Selecionada:', loja);
         console.log('Apps Script URL para envio:', appsScriptUrl);
-        // =========================================================
 
 
         // 3. Validação do Roteamento
@@ -66,7 +62,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (!appsScriptUrl) {
-            // Este erro indica que a chave 'loja' do select não existe no objeto lojaEndpoints.
             alert('ERRO DE ROTEAMENTO: Não foi possível encontrar o Web App para a loja ' + loja + '. Verifique o console ou contate o suporte.');
             return;
         }
