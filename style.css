@@ -23,7 +23,7 @@ body {
 }
 
 h1 {
-    /* ATUALIZADO: Usando o Azul Marinho Escuro para o título */
+    /* Cor do Título (Conferência de Lacre) */
     color: #003366; 
     font-size: 24px;
     margin-bottom: 20px;
@@ -49,7 +49,7 @@ label {
     font-weight: bold;
 }
 
-/* Aplica o estilo tanto para input quanto para select */
+/* Aplica o estilo tanto para input quanto para select (página de registro) */
 input[type="text"], 
 select { 
     width: 100%;
@@ -57,12 +57,8 @@ select {
     border: 1px solid #ddd;
     border-radius: 4px;
     box-sizing: border-box;
-    
-    /* Garante a mesma fonte e tamanho do input */
     font-size: 16px; 
     font-family: Arial, sans-serif; 
-    
-    /* Remove a aparência padrão (opcional, mas bom para simetria) */
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -80,7 +76,6 @@ button {
 }
 
 button[type="submit"] {
-    /* Botão de submit do formulário de registro */
     background-color: #007bff; 
     color: #fff;
 }
@@ -97,39 +92,37 @@ button[type="submit"]:hover {
 }
 
 /* ------------------------------------------------ */
-/* --- NOVOS ESTILOS PARA PÁGINA DE CONFERÊNCIA --- */
+/* --- ESTILOS DA PÁGINA DE CONFERÊNCIA (FINAL) --- */
 /* ------------------------------------------------ */
 
-/* NOVO ESTILO: Subtítulo (Selecionar Loja) */
 #subtitle-loja {
-    color: #343a40; /* Cor escura para melhor leitura */
+    /* ATUALIZADO: Mesma cor do título h1 */
+    color: #003366; 
     margin-top: 15px;
     margin-bottom: 5px;
-    font-size: 18px; /* Aumenta o tamanho da fonte */
-    text-align: center; /* Centraliza o subtítulo */
+    font-size: 18px;
+    text-align: center; 
     font-weight: bold;
 }
 
-/* NOVO ESTILO: Garante que os botões fiquem centralizados e em coluna (Substitui .button-container e .loja-buttons-grid) */
 .loja-list-container {
     display: flex;
     flex-direction: column;
-    align-items: stretch; /* Garante que os itens ocupem a largura total */
-    gap: 12px; /* Espaço entre os botões */
+    align-items: stretch; 
+    /* ATUALIZADO: Aumenta o espaço entre os botões */
+    gap: 15px; 
     margin-top: 15px;
-    width: 100%; /* Ocupa a largura total do container */
+    width: 100%; 
 }
 
-
-/* NOVO ESTILO: Botões Individuais (Loja) */
 .loja-button {
-    /* Ajustes de tamanho e preenchimento (Dobrando o tamanho) */
+    /* Ajustes de tamanho e preenchimento */
     display: block; 
-    padding: 15px 5px; /* Aumenta verticalmente */
+    padding: 15px 5px; 
     
-    /* Estilos de fonte */
-    border-radius: 4px;
-    font-size: 18px; /* Fonte maior */
+    /* ATUALIZADO: Fonte maior */
+    font-size: 20px; 
+    
     font-weight: bold;
     text-align: center;
     text-decoration: none;
@@ -137,12 +130,13 @@ button[type="submit"]:hover {
     transition: background-color 0.3s ease;
     
     /* Cores Neutras */
-    background-color: #e9ecef; /* Cinza claro */
-    color: #343a40 !important; /* Texto cinza escuro */
+    background-color: #e9ecef; 
+    color: #343a40 !important; 
     border: 1px solid #ced4da;
+    border-radius: 4px;
     box-sizing: border-box; 
 }
 
 .loja-button:hover {
-    background-color: #ced4da; /* Escurece um pouco no hover */
+    background-color: #ced4da; 
 }
