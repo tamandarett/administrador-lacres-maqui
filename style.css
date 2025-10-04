@@ -23,7 +23,7 @@ body {
 }
 
 h1 {
-    /* ATUALIZADO: Usando o Azul Marinho Escuro (#003366) para o título */
+    /* ATUALIZADO: Usando o Azul Marinho Escuro para o título */
     color: #003366; 
     font-size: 24px;
     margin-bottom: 20px;
@@ -96,32 +96,51 @@ button[type="submit"]:hover {
     text-align: center;
 }
 
-/* --- Estilos para a página de Conferência (BOTOÕES) --- */
+/* ------------------------------------------------ */
+/* --- NOVOS ESTILOS PARA PÁGINA DE CONFERÊNCIA --- */
+/* ------------------------------------------------ */
 
-.loja-buttons-grid {
-    display: grid;
-    /* Divide a área em duas colunas de tamanhos iguais */
-    grid-template-columns: 1fr 1fr; 
-    gap: 10px; /* Espaço entre os botões pequenos */
-    margin-top: 10px;
+/* NOVO ESTILO: Subtítulo (Selecionar Loja) */
+#subtitle-loja {
+    color: #343a40; /* Cor escura para melhor leitura */
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-size: 18px; /* Aumenta o tamanho da fonte */
+    text-align: center; /* Centraliza o subtítulo */
+    font-weight: bold;
 }
 
+/* NOVO ESTILO: Garante que os botões fiquem centralizados e em coluna (Substitui .button-container e .loja-buttons-grid) */
+.loja-list-container {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch; /* Garante que os itens ocupem a largura total */
+    gap: 12px; /* Espaço entre os botões */
+    margin-top: 15px;
+    width: 100%; /* Ocupa a largura total do container */
+}
+
+
+/* NOVO ESTILO: Botões Individuais (Loja) */
 .loja-button {
-    /* Estilo para os 9 botões menores */
+    /* Ajustes de tamanho e preenchimento (Dobrando o tamanho) */
     display: block; 
-    padding: 8px 5px; 
+    padding: 15px 5px; /* Aumenta verticalmente */
+    
+    /* Estilos de fonte */
     border-radius: 4px;
-    font-size: 14px;
+    font-size: 18px; /* Fonte maior */
     font-weight: bold;
     text-align: center;
     text-decoration: none;
     cursor: pointer;
     transition: background-color 0.3s ease;
     
-    /* Cores Neutras: Cinza com texto escuro para visual limpo */
+    /* Cores Neutras */
     background-color: #e9ecef; /* Cinza claro */
     color: #343a40 !important; /* Texto cinza escuro */
     border: 1px solid #ced4da;
+    box-sizing: border-box; 
 }
 
 .loja-button:hover {
