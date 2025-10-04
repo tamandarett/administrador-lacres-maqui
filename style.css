@@ -105,11 +105,11 @@ button[type="submit"]:hover {
     font-weight: bold;
 }
 
-/* 1. NOVO CONTAINER PRINCIPAL: Coloca as duas colunas lado a lado */
+/* 1. Contêiner principal para colocar as duas colunas LADO A LADO */
 .loja-columns-container {
     display: flex;
-    justify-content: space-between; /* Espaçamento entre as duas colunas */
-    gap: 15px; /* Espaço entre as duas colunas */
+    justify-content: space-between; 
+    gap: 15px; 
     margin-top: 15px;
     width: 100%;
 }
@@ -119,32 +119,28 @@ button[type="submit"]:hover {
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    width: 50%; /* Faz com que cada coluna ocupe metade do espaço */
+    /* ATUALIZADO: Usando flex: 1 1 0 para garantir que ocupe o espaço total disponível igualmente */
+    flex: 1 1 0; 
     gap: 15px; /* Espaço entre os botões dentro de CADA coluna */
 }
 
+/* 3. Estilo dos botões */
 .loja-button {
-    /* Ajustes de tamanho e preenchimento */
+    /* O width: 100% é herdado implicitamente de align-items: stretch */
     display: block; 
     padding: 15px 5px; 
-    
-    /* Fonte maior */
     font-size: 20px; 
-    
     font-weight: bold;
     text-align: center;
     text-decoration: none;
     cursor: pointer;
     transition: background-color 0.3s ease;
     
-    /* Cores Neutras */
     background-color: #e9ecef; 
     color: #343a40 !important; 
     border: 1px solid #ced4da;
     border-radius: 4px;
     box-sizing: border-box; 
-    
-    /* Garante que o texto se alinhe corretamente e tenha espaço suficiente */
     line-height: 1.2; 
 }
 
