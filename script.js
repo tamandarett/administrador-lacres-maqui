@@ -24,6 +24,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const novoRegistroBtn = document.getElementById('novoRegistroBtn');
     const lojaSelect = document.getElementById('loja');
     
+    // NOVO: Referência para o botão de envio para podermos desabilitá-lo
+    const submitButton = form.querySelector('button[type="submit"]');
+
     // Funções para impedir copiar/colar e menu de contexto (MANTIDAS)
     const preventAction = (e) => {
         e.preventDefault();
@@ -77,7 +80,13 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         
-        // 5. Prepara os dados
+        // =========================================================
+        // 5. PROTEÇÃO CONTRA CLIQUE DUPLO
+        // =========================================================
+        submitButton.disabled = true;
+        submitButton.textContent = 'Registrando... Por favor, aguarde.';
+
+        // 6. Prepara os dados
         const dataHora = new Date().toISOString();
         const dados = {
             lacre: lacre,
@@ -86,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
             dataHora: dataHora
         };
 
-        // 6. Envia os dados para o endpoint correto
+        // 7. Envia os dados para o endpoint correto
         try {
             const response = await fetch(appsScriptUrl, { // Usa a URL roteada!
                 method: 'POST',
@@ -110,6 +119,12 @@ document.addEventListener('DOMContentLoaded', () => {
             // Falha de Conexão (ex: sem internet)
             console.error('Erro de conexão:', error);
             alert('Não foi possível conectar. Verifique sua internet ou tente novamente.');
+        } finally {
+            // =========================================================
+            // 8. FIM DA PROTEÇÃO: SEMPRE reabilita o botão
+            // =========================================================
+            submitButton.disabled = false;
+            submitButton.textContent = 'Registrar Lacre';
         }
     });
 
@@ -120,7 +135,6 @@ document.addEventListener('DOMContentLoaded', () => {
         form.reset();
         lacreInput.style.borderColor = '';
         confirmarLacreInput.style.borderColor = '';
-        // Limpa o select
         lojaSelect.value = ""; 
     });
 });
