@@ -17,14 +17,19 @@ body {
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     width: 100%;
-    /* AJUSTE AQUI: Aumentando a largura máxima em 50% (de 400px para 600px) */
-    max-width: 600px; 
+    /* CORREÇÃO: Padrão volta para 400px (para a página de Registro) */
+    max-width: 400px; 
     box-sizing: border-box;
     text-align: center;
 }
 
+/* NOVO BLOCO: Sobrescreve o max-width SÓ na página de Conferência */
+.page-conferencia .container {
+    max-width: 600px;
+}
+
 h1 {
-    /* Cor do Título (Conferência de Lacre) */
+    /* Cor do Título */
     color: #003366; 
     font-size: 24px;
     margin-bottom: 20px;
@@ -120,14 +125,12 @@ button[type="submit"]:hover {
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    /* ATUALIZADO: Usando flex: 1 1 0 para garantir que ocupe o espaço total disponível igualmente */
     flex: 1 1 0; 
     gap: 15px; /* Espaço entre os botões dentro de CADA coluna */
 }
 
 /* 3. Estilo dos botões */
 .loja-button {
-    /* O width: 100% é herdado implicitamente de align-items: stretch */
     display: block; 
     padding: 15px 5px; 
     font-size: 20px; 
