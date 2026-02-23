@@ -1,103 +1,328 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Registro de Lacre</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Lacre - Tamandaré Tintas</title>
+
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --cor-primaria: #D32F2F; 
+            --cor-secundaria: #B71C1C;
+            --cor-texto: #2D3748;
+            --cor-fundo: #F4F7F6;
+            --border-color: #E2E8F0;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding-bottom: 80px; /* Espaço para o botão flutuante */
+        }
+
+        .container {
+            background-color: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 35px 30px;
+            width: 100%;
+            max-width: 450px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .logo-container img {
+            max-width: 180px;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            color: var(--cor-texto);
+            margin-bottom: 25px;
+            font-size: 22px;
+            font-weight: 700;
+            margin-top: 0;
+        }
+
+        .form-field, .form-group {
+            text-align: left;
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 6px;
+            color: #4A5568;
+        }
+
+        input[type="text"], select, textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
+            background-color: #FFFFFF;
+            color: var(--cor-texto);
+            transition: all 0.2s ease;
+        }
+
+        input[type="text"]:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--cor-primaria);
+            box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.15);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        button[type="submit"], #novoRegistroBtn {
+            width: 100%;
+            padding: 14px 24px;
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            background-color: var(--cor-primaria);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(211, 47, 47, 0.2);
+            margin-top: 10px;
+        }
+
+        button[type="submit"]:hover, #novoRegistroBtn:hover {
+            background-color: var(--cor-secundaria);
+            transform: translateY(-2px);
+        }
+
+        button[type="submit"]:active, #novoRegistroBtn:active {
+            transform: translateY(0);
+        }
+
+        #successMessage p {
+            font-size: 18px !important;
+            font-weight: 700;
+            color: #2F855A !important; /* Verde Sucesso */
+            margin-bottom: 20px;
+            background-color: #F0FFF4;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #C6F6D5;
+        }
+
+        /* Botão Flutuante de Solicitação */
+        #btnOpenSolicitacao {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background-color: #2D3748;
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.2s ease;
+            z-index: 100;
+        }
+
+        #btnOpenSolicitacao:hover {
+            background-color: #1A202C;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Modal Modernizado */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(3px);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            text-align: left;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 26px;
+            font-weight: bold;
+            color: #A0AEC0;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .close-modal:hover {
+            color: var(--cor-primaria);
+        }
+
+        .modal-content h2 {
+            margin-top: 0;
+            font-size: 20px;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+        .modal-content p {
+            color: #718096;
+            font-size: 14px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        #msgRetorno {
+            margin-top: 15px;
+            font-weight: 600;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .footer {
+            margin-top: auto;
+            padding: 20px 15px;
+            color: #A0AEC0;
+            font-size: 13px;
+            width: 100%;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-<div class="container">
-    <div class="logo-container">
-        <img src="logo-tamandare.png" alt="Logo Tamandaré Tintas">
+    <div class="container">
+        <div class="logo-container">
+            <img src="logo-tamandare.png" alt="Logo Tamandaré Tintas" onerror="this.style.display='none'">
+        </div>
+        <h1>Registro de Lacre</h1>
+
+        <form id="lacreForm" autocomplete="off">
+            <div class="form-field"> 
+                <label for="lacre">Número do Lacre:</label>
+                <input type="text" id="lacre" required autocomplete="off">
+            </div>
+            
+            <div class="form-field">
+                <label for="confirmar-lacre">Confirmar Lacre:</label>
+                <input type="text" id="confirmar-lacre" required autocomplete="off">
+            </div>
+
+            <div class="form-field">
+                <label for="loja">Loja:</label>
+                <select id="loja" required>
+                    <option value="" disabled selected>Selecione a Loja</option>
+                    <option value="02 - Morada">02 - Morada</option>
+                    <option value="05 - Visconde">05 - Visconde</option>
+                    <option value="09 - Vinhedo">09 - Vinhedo</option>
+                    <option value="10 - Conceição">10 - Conceição</option>
+                    <option value="12 - Elias Fausto">12 - Elias Fausto</option>
+                    <option value="13 - Maria José">13 - Maria José</option>
+                    <option value="14 - Paula Leite">14 - Paula Leite</option>
+                    <option value="15 - Salto">15 - Salto</option>
+                    <option value="16 - Itu">16 - Itu</option>
+                </select>
+            </div>
+            
+            <div class="form-field">
+                <label for="operador">Operador:</label>
+                <input type="text" id="operador" required autocomplete="off">
+            </div>
+            
+            <button type="submit">Registrar Lacre</button>
+        </form>
+
+        <div id="successMessage" style="display:none; text-align: center;">
+            <p>Lacre registrado com sucesso!</p>
+            <button id="novoRegistroBtn">Novo Registro</button>
+        </div>
     </div>
-    <h1>Registro de Lacre</h1>
 
-    <form id="lacreForm" autocomplete="off">
-        <div class="form-field"> 
-            <label for="lacre">Número do Lacre:</label>
-            <input type="text" id="lacre" required autocomplete="off">
-        </div>
-        
-        <div class="form-field">
-            <label for="confirmar-lacre">Confirmar Lacre:</label>
-            <input type="text" id="confirmar-lacre" required autocomplete="off">
-        </div>
-
-        <div class="form-field">
-            <label for="loja">Loja:</label>
-            <select id="loja" required>
-                <option value="" disabled selected>Selecione a Loja</option>
-                <option value="02 - Morada">02 - Morada</option>
-                <option value="05 - Visconde">05 - Visconde</option>
-                <option value="09 - Vinhedo">09 - Vinhedo</option>
-                <option value="10 - Conceição">10 - Conceição</option>
-                <option value="12 - Elias Fausto">12 - Elias Fausto</option>
-                <option value="13 - Maria José">13 - Maria José</option>
-                <option value="14 - Paula Leite">14 - Paula Leite</option>
-                <option value="15 - Salto">15 - Salto</option>
-                <option value="16 - Itu">16 - Itu</option>
-            </select>
-        </div>
-        
-        <div class="form-field">
-            <label for="operador">Operador:</label>
-            <input type="text" id="operador" required autocomplete="off">
-        </div>
-        
-        <button type="submit">Registrar Lacre</button>
-    </form>
-
-    <div id="successMessage" style="display:none; text-align: center;">
-        <p style="font-size: 24px; font-weight: bold; color: #007bff;">Lacre registrado com sucesso!</p>
-        <button id="novoRegistroBtn">Novo Registro</button>
+    <div class="footer">
+        © 2026 Tamandaré Tintas. Operação Segura.
     </div>
-</div>
 
-<div class="footer">
-    © 2025 Tamandaré Tintas. Todos os direitos reservados.
-</div>
+    <button id="btnOpenSolicitacao" type="button">📦 Solicitar Lacres</button>
 
-<button id="btnOpenSolicitacao" type="button">📦 Solicitar Lacres</button>
+    <div id="modalSolicitacao" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Solicitar Reposição</h2>
+            <p>Preencha para pedir mais lacres para sua loja.</p>
+            
+            <form id="formSolicitacao">
+                <div class="form-group">
+                    <label>Loja:</label>
+                    <select id="solicitacaoLoja" required>
+                        <option value="" disabled selected>Escolha...</option>
+                        <option value="02 - Morada">02 - Morada</option>
+                        <option value="05 - Visconde">05 - Visconde</option>
+                        <option value="09 - Vinhedo">09 - Vinhedo</option>
+                        <option value="10 - Conceição">10 - Conceição</option>
+                        <option value="12 - Elias Fausto">12 - Elias Fausto</option>
+                        <option value="13 - Maria José">13 - Maria José</option>
+                        <option value="14 - Paula Leite">14 - Paula Leite</option>
+                        <option value="15 - Salto">15 - Salto</option>
+                        <option value="16 - Itu">16 - Itu</option>
+                    </select>
+                </div>
 
-<div id="modalSolicitacao" class="modal-overlay">
-  <div class="modal-content">
-    <span class="close-modal">&times;</span>
-    <h2>Solicitar Reposição</h2>
-    <p>Preencha para pedir mais lacres.</p>
-    
-    <form id="formSolicitacao">
-      <div class="form-group">
-        <label>Loja:</label>
-        <select id="solicitacaoLoja" required>
-            <option value="" disabled selected>Escolha...</option>
-            <option value="02 - Morada">02 - Morada</option>
-            <option value="05 - Visconde">05 - Visconde</option>
-            <option value="09 - Vinhedo">09 - Vinhedo</option>
-            <option value="10 - Conceição">10 - Conceição</option>
-            <option value="12 - Elias Fausto">12 - Elias Fausto</option>
-            <option value="13 - Maria José">13 - Maria José</option>
-            <option value="14 - Paula Leite">14 - Paula Leite</option>
-            <option value="15 - Salto">15 - Salto</option>
-            <option value="16 - Itu">16 - Itu</option>
-        </select>
-      </div>
+                <div class="form-group">
+                    <label>Quem está pedindo?</label>
+                    <input type="text" id="solicitacaoNome" placeholder="Seu nome" required>
+                </div>
 
-      <div class="form-group">
-        <label>Quem está pedindo?</label>
-        <input type="text" id="solicitacaoNome" placeholder="Seu nome" required>
-      </div>
+                <div class="form-group">
+                    <label>Quantidade / Obs (Opcional):</label>
+                    <textarea id="solicitacaoObs" placeholder="Ex: Preciso de 2 pacotes urgentes"></textarea>
+                </div>
 
-      <div class="form-group">
-        <label>Quantidade / Obs (Opcional):</label>
-        <textarea id="solicitacaoObs" placeholder="Ex: Preciso de 2 pacotes urgentes"></textarea>
-      </div>
+                <button type="submit" id="btnEnviarSolicitacao">Enviar Pedido</button>
+            </form>
+            <div id="msgRetorno"></div>
+        </div>
+    </div>
 
-      <button type="submit" id="btnEnviarSolicitacao">Enviar Pedido</button>
-    </form>
-    <div id="msgRetorno" style="margin-top:10px; font-weight:bold;"></div>
-  </div>
-</div>
-
-<script src="script.js"></script>        <script src="solicitacao.js"></script>    </body>
+    <script src="script.js"></script>
+    <script src="solicitacao.js"></script>
+</body>
 </html>
