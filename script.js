@@ -23,14 +23,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const successMessageDiv = document.getElementById('successMessage');
     const novoRegistroBtn = document.getElementById('novoRegistroBtn');
     const lojaSelect = document.getElementById('loja');
+    const mensagemErro = document.getElementById('mensagem-erro');
     
-    // NOVO: Referência para o botão de envio para podermos desabilitá-lo
+    // Referência para o botão de envio
     const submitButton = form.querySelector('button[type="submit"]');
 
-    // Funções para impedir copiar/colar e menu de contexto (MANTIDAS)
+    // Função centralizada para exibir erros na tela
+    function mostrarErro(mensagem) {
+        mensagemErro.innerHTML = mensagem;
+        mensagemErro.style.display = 'block';
+        
+        // Faz o erro desaparecer sozinho após 5 segundos para limpar a tela
+        setTimeout(() => {
+            mensagemErro.style.display = 'none';
+        }, 5000);
+    }
+
+    // Funções para impedir copiar/colar e menu de contexto (Modernizada)
     const preventAction = (e) => {
         e.preventDefault();
-        alert('Copiar, colar ou cortar não é permitido neste campo. Por favor, digite o número.');
+        mostrarErro('⚠️ Copiar ou colar não é permitido por segurança. Digite o número.');
     };
     lacreInput.addEventListener('paste', preventAction);
     confirmarLacreInput.addEventListener('paste', preventAction);
@@ -42,6 +54,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Evento de envio do formulário
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
+
+        // Oculta erros anteriores a cada nova tentativa
+        mensagemErro.style.display = 'none';
 
         // 1. Pega os valores
         const lacre = lacreInput.value;
@@ -57,15 +72,14 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Loja Selecionada:', loja);
         console.log('Apps Script URL para envio:', appsScriptUrl);
 
-
         // 3. Validação do Roteamento
         if (!loja) {
-            alert('Atenção: Por favor, selecione a Loja antes de registrar.');
+            mostrarErro('⚠️ Por favor, selecione a Loja antes de registrar.');
             return;
         }
 
         if (!appsScriptUrl) {
-            alert('ERRO DE ROTEAMENTO: Não foi possível encontrar o Web App para a loja ' + loja + '. Verifique o console ou contate o suporte.');
+            mostrarErro(`⚠️ Erro de Roteamento: Rota da loja ${loja} não encontrada.`);
             return;
         }
 
@@ -74,9 +88,9 @@ document.addEventListener('DOMContentLoaded', () => {
         confirmarLacreInput.style.borderColor = '';
 
         if (lacre !== confirmarLacre) {
-            alert('Atenção: Os números de lacre não são iguais. Por favor, verifique.');
-            lacreInput.style.borderColor = 'red';
-            confirmarLacreInput.style.borderColor = 'red';
+            mostrarErro('⚠️ Os números do lacre não conferem. Por favor, verifique.');
+            lacreInput.style.borderColor = '#C53030'; // Vermelho erro
+            confirmarLacreInput.style.borderColor = '#C53030';
             return;
         }
         
@@ -97,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 7. Envia os dados para o endpoint correto
         try {
-            const response = await fetch(appsScriptUrl, { // Usa a URL roteada!
+            const response = await fetch(appsScriptUrl, { 
                 method: 'POST',
                 headers: {
                     'Content-Type': 'text/plain;charset=utf-8',
@@ -111,14 +125,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 form.style.display = 'none';
                 successMessageDiv.style.display = 'block';
             } else {
-                // Falha do Web App (ex: erro 404, 500)
+                // Falha do Web App
                 console.error('Falha do Web App:', response.status, response.statusText);
-                alert('Erro ao enviar os dados. O Web App retornou um erro (código: ' + response.status + '). Verifique se a URL está correta ou se o script está publicado.');
+                mostrarErro(`⚠️ Erro do sistema (Código: ${response.status}). Tente novamente.`);
             }
         } catch (error) {
             // Falha de Conexão (ex: sem internet)
             console.error('Erro de conexão:', error);
-            alert('Não foi possível conectar. Verifique sua internet ou tente novamente.');
+            mostrarErro('⚠️ Não foi possível conectar. Verifique a internet e tente novamente.');
         } finally {
             // =========================================================
             // 8. FIM DA PROTEÇÃO: SEMPRE reabilita o botão
@@ -132,6 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
     novoRegistroBtn.addEventListener('click', () => {
         form.style.display = 'block';
         successMessageDiv.style.display = 'none';
+        mensagemErro.style.display = 'none'; // Garante que a caixa de erro suma
         form.reset();
         lacreInput.style.borderColor = '';
         confirmarLacreInput.style.borderColor = '';
