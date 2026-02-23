@@ -34,7 +34,7 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            padding-bottom: 80px; /* Espaço para o botão flutuante */
+            padding-bottom: 80px; 
         }
 
         .container {
@@ -60,6 +60,20 @@
             font-size: 22px;
             font-weight: 700;
             margin-top: 0;
+        }
+
+        /* Estilo da Nova Caixa de Erro */
+        .alerta-erro {
+            background-color: #FFF5F5;
+            color: #C53030;
+            border: 1px solid #FED7D7;
+            padding: 14px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            text-align: left;
+            display: none; /* Fica oculta por padrão */
         }
 
         .form-field, .form-group {
@@ -126,7 +140,7 @@
         #successMessage p {
             font-size: 18px !important;
             font-weight: 700;
-            color: #2F855A !important; /* Verde Sucesso */
+            color: #2F855A !important;
             margin-bottom: 20px;
             background-color: #F0FFF4;
             padding: 15px;
@@ -134,7 +148,6 @@
             border: 1px solid #C6F6D5;
         }
 
-        /* Botão Flutuante de Solicitação */
         #btnOpenSolicitacao {
             position: fixed;
             bottom: 25px;
@@ -159,7 +172,6 @@
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
         }
 
-        /* Modal Modernizado */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -235,6 +247,8 @@
             <img src="logo-tamandare.png" alt="Logo Tamandaré Tintas" onerror="this.style.display='none'">
         </div>
         <h1>Registro de Lacre</h1>
+
+        <div id="mensagem-erro" class="alerta-erro"></div>
 
         <form id="lacreForm" autocomplete="off">
             <div class="form-field"> 
