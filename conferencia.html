@@ -1,42 +1,162 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Conferência de Lacre</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conferência de Lacre - Tamandaré Tintas</title>
+    
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --cor-primaria: #D32F2F; 
+            --cor-secundaria: #B71C1C;
+            --cor-texto: #2D3748;
+            --cor-fundo: #F4F7F6;
+            --border-color: #E2E8F0;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 35px 30px;
+            width: 100%;
+            max-width: 550px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .logo-container img {
+            max-width: 180px;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            color: var(--cor-texto);
+            margin-bottom: 5px;
+            font-size: 22px;
+            font-weight: 700;
+            margin-top: 0;
+        }
+
+        h2#subtitle-loja {
+            color: #718096;
+            font-size: 15px;
+            font-weight: 500;
+            margin-bottom: 25px;
+            margin-top: 0;
+        }
+
+        /* Estrutura de colunas para os botões */
+        .loja-columns-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .loja-column {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .loja-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 10px;
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            background-color: var(--cor-primaria);
+            color: white;
+            text-decoration: none; /* Remove o sublinhado do link */
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(211, 47, 47, 0.2);
+            width: 100%;
+        }
+
+        .loja-button:hover {
+            background-color: var(--cor-secundaria);
+            transform: translateY(-2px);
+        }
+
+        .loja-button:active {
+            transform: translateY(0);
+        }
+
+        .footer {
+            margin-top: auto;
+            padding: 20px 15px;
+            color: #A0AEC0;
+            font-size: 13px;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* Responsividade para ecrãs de telemóveis pequenos */
+        @media (max-width: 480px) {
+            .loja-columns-container {
+                flex-direction: column;
+                gap: 12px;
+            }
+        }
+    </style>
 </head>
 <body class="page-conferencia">
-<div class="container">
-    <div class="logo-container">
-        <img src="logo-tamandare.png" alt="Logo Tamandaré Tintas">
-    </div>
-    
-    <h1>Conferência de Lacre</h1>
-
-    <h2 id="subtitle-loja">Selecione a loja:</h2>
-    
-    <div class="loja-columns-container">
-        
-        <div class="loja-column">
-            <a href="https://docs.google.com/spreadsheets/d/1mDSju_GCEiHRodWb7mMW6VYvpJDi5Em4z4E4HMEAJ98/edit" class="loja-button">02 - Morada</a>
-            <a href="https://docs.google.com/spreadsheets/d/1PzxQoO1mfpT2lcrHXGUzfLYGB6uywXJY84KmwWRaw5U/edit" class="loja-button">05 - Visconde</a>
-            <a href="https://docs.google.com/spreadsheets/d/1EPiNTmD94zo1YL5cYWT-NOIhWnFbrUE8srwxRFxkwIw/edit" class="loja-button">09 - Vinhedo</a>
-            <a href="https://docs.google.com/spreadsheets/d/1kdrmWmfcnsvIqvUW1KsalOwGOAuVEQbvwJ25eA2y5Gw/edit" class="loja-button">10 - Conceição</a>
-            <a href="https://docs.google.com/spreadsheets/d/1lIeQq7QVw5sRCaFk4jXpkrI4h-z-gEsAzpBz_WRNSLE/edit" class="loja-button">12 - Elias Fausto</a>
+    <div class="container">
+        <div class="logo-container">
+            <img src="logo-tamandare.png" alt="Logo Tamandaré Tintas" onerror="this.style.display='none'">
         </div>
         
-        <div class="loja-column">
-            <a href="https://docs.google.com/spreadsheets/d/1J72AxmXlFTv063Clu7Zr9Zye6-yuHXfQzEmSeiMxFyc/edit" class="loja-button">13 - Maria José</a>
-            <a href="https://docs.google.com/spreadsheets/d/1WkC6A3Q4AKtNa4j001gXvhrRNd1mF2Doa8mZIlJ07sk/edit" class="loja-button">14 - Paula Leite</a>
-            <a href="https://docs.google.com/spreadsheets/d/1mUmqwDcECL6OWrI-Vwgsl2JYkhRDOxTq1jO45o48dKc/edit" class="loja-button">15 - Salto</a>
-            <a href="https://docs.google.com/spreadsheets/d/14m6AKa0isweulaQvP3-fc8fzPuDxtCSmJffCqP3jtS0/edit" class="loja-button">16 - Itu</a>
+        <h1>Conferência de Lacre</h1>
+        <h2 id="subtitle-loja">Selecione a loja:</h2>
+        
+        <div class="loja-columns-container">
+            <div class="loja-column">
+                <a href="https://docs.google.com/spreadsheets/d/1mDSju_GCEiHRodWb7mMW6VYvpJDi5Em4z4E4HMEAJ98/edit" target="_blank" class="loja-button">02 - Morada</a>
+                <a href="https://docs.google.com/spreadsheets/d/1PzxQoO1mfpT2lcrHXGUzfLYGB6uywXJY84KmwWRaw5U/edit" target="_blank" class="loja-button">05 - Visconde</a>
+                <a href="https://docs.google.com/spreadsheets/d/1EPiNTmD94zo1YL5cYWT-NOIhWnFbrUE8srwxRFxkwIw/edit" target="_blank" class="loja-button">09 - Vinhedo</a>
+                <a href="https://docs.google.com/spreadsheets/d/1kdrmWmfcnsvIqvUW1KsalOwGOAuVEQbvwJ25eA2y5Gw/edit" target="_blank" class="loja-button">10 - Conceição</a>
+                <a href="https://docs.google.com/spreadsheets/d/1lIeQq7QVw5sRCaFk4jXpkrI4h-z-gEsAzpBz_WRNSLE/edit" target="_blank" class="loja-button">12 - Elias Fausto</a>
+            </div>
+            
+            <div class="loja-column">
+                <a href="https://docs.google.com/spreadsheets/d/1J72AxmXlFTv063Clu7Zr9Zye6-yuHXfQzEmSeiMxFyc/edit" target="_blank" class="loja-button">13 - Maria José</a>
+                <a href="https://docs.google.com/spreadsheets/d/1WkC6A3Q4AKtNa4j001gXvhrRNd1mF2Doa8mZIlJ07sk/edit" target="_blank" class="loja-button">14 - Paula Leite</a>
+                <a href="https://docs.google.com/spreadsheets/d/1mUmqwDcECL6OWrI-Vwgsl2JYkhRDOxTq1jO45o48dKc/edit" target="_blank" class="loja-button">15 - Salto</a>
+                <a href="https://docs.google.com/spreadsheets/d/14m6AKa0isweulaQvP3-fc8fzPuDxtCSmJffCqP3jtS0/edit" target="_blank" class="loja-button">16 - Itu</a>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="footer">
-    © 2026 Tamandaré Tintas. Todos os direitos reservados.
-</div>
+    <div class="footer">
+        © 2026 Tamandaré Tintas. Operação Segura.
+    </div>
 </body>
 </html>
