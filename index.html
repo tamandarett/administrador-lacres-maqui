@@ -62,7 +62,6 @@
             margin-top: 0;
         }
 
-        /* Estilo da Nova Caixa de Erro */
         .alerta-erro {
             background-color: #FFF5F5;
             color: #C53030;
@@ -73,7 +72,7 @@
             font-weight: 600;
             font-size: 14px;
             text-align: left;
-            display: none; /* Fica oculta por padrão */
+            display: none; 
         }
 
         .form-field, .form-group {
@@ -99,6 +98,11 @@
             background-color: #FFFFFF;
             color: var(--cor-texto);
             transition: all 0.2s ease;
+        }
+
+        /* Padronização visual para Caixa Alta em Operador */
+        #operador {
+            text-transform: uppercase;
         }
 
         input[type="text"]:focus, select:focus, textarea:focus {
@@ -279,7 +283,7 @@
             
             <div class="form-field">
                 <label for="operador">Operador:</label>
-                <input type="text" id="operador" required autocomplete="off">
+                <input type="text" id="operador" required autocomplete="off" oninput="this.value = this.value.toUpperCase()">
             </div>
             
             <button type="submit">Registrar Lacre</button>
@@ -322,7 +326,7 @@
 
                 <div class="form-group">
                     <label>Quem está pedindo?</label>
-                    <input type="text" id="solicitacaoNome" placeholder="Seu nome" required>
+                    <input type="text" id="solicitacaoNome" placeholder="Seu nome" required oninput="this.value = this.value.toUpperCase()">
                 </div>
 
                 <div class="form-group">
