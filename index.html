@@ -5,14 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro de Lacre - Tamandaré Tintas</title>
     <link rel="shortcut icon" type="image/png" href="favicon.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
             --cor-primaria: #D32F2F; 
             --cor-secundaria: #B71C1C;
-            --cor-destaque-loja: #2C5282; /* Azul sóbrio para a loja fixada */
+            --cor-destaque-loja: #2C5282;
             --cor-texto: #2D3748;
             --cor-fundo: #F4F7F6;
             --border-color: #E2E8F0;
@@ -29,7 +28,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden; /* Mantém tudo em uma única página */
+            overflow: hidden;
         }
 
         .container {
@@ -37,137 +36,91 @@
             border: 1px solid var(--border-color);
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            padding: 25px 40px;
+            padding: 20px 35px;
             width: 95%;
-            max-width: 850px;
+            max-width: 800px;
             text-align: center;
         }
 
-        .logo-container img {
-            max-width: 130px;
-            margin-bottom: 5px;
+        .logo-container img { max-width: 120px; margin-bottom: 5px; }
+
+        h1 { font-size: 18px; margin: 0 0 15px 0; color: #4A5568; font-weight: 700; }
+
+        .alerta-erro {
+            background-color: #FFF5F5;
+            color: #C53030;
+            border: 1px solid #FED7D7;
+            padding: 8px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-weight: 600;
+            font-size: 13px;
+            display: none; 
         }
 
-        h1 {
-            font-size: 18px;
-            margin: 0 0 20px 0;
-            color: #4A5568;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .form-row {
-            display: flex;
-            gap: 30px;
-            text-align: left;
-            margin-bottom: 10px;
-        }
-
+        .form-row { display: flex; gap: 25px; text-align: left; margin-bottom: 5px; }
         .column { flex: 1; }
 
-        label {
-            display: block;
-            font-weight: 600;
-            font-size: 12px;
-            margin-bottom: 5px;
-            color: #718096;
-        }
+        label { display: block; font-weight: 600; font-size: 11px; margin-bottom: 4px; color: #718096; }
 
         input, select {
             width: 100%;
-            padding: 10px 12px;
+            padding: 8px 10px;
             border: 1px solid var(--border-color);
             border-radius: 6px;
             font-size: 14px;
-            margin-bottom: 15px;
-            transition: all 0.2s;
+            margin-bottom: 10px;
         }
 
-        /* Estilo da Loja Fixada */
         select.loja-fixada {
             background-color: var(--cor-destaque-loja);
             color: white;
             font-weight: 600;
-            border-color: var(--cor-destaque-loja);
-            cursor: not-allowed;
         }
 
-        .header-loja {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .btn-trocar {
-            color: var(--cor-primaria);
-            font-size: 11px;
-            font-weight: 700;
-            text-decoration: none;
-            cursor: pointer;
-            display: none; /* Oculto por padrão */
-        }
-
-        .btn-trocar:hover { text-decoration: underline; }
+        .header-loja { display: flex; justify-content: space-between; align-items: center; }
+        .btn-trocar { color: var(--cor-primaria); font-size: 10px; font-weight: 700; cursor: pointer; display: none; }
 
         button[type="submit"] {
             width: 40%;
-            padding: 14px;
+            padding: 12px;
             font-weight: 700;
             background-color: var(--cor-primaria);
             color: white;
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            transition: 0.2s;
-            margin-top: 10px;
+            margin-top: 5px;
         }
 
-        button[type="submit"]:hover { background-color: var(--cor-secundaria); transform: translateY(-1px); }
-
-        /* Histórico */
+        /* Quadro de Histórico Fixo e Compacto */
         .historico-caixa {
-            margin-top: 25px;
+            margin-top: 15px;
             background: #f8fafc;
             border: 1px solid var(--border-color);
             border-radius: 8px;
-            padding: 12px;
+            padding: 8px;
+            height: 110px; /* Altura fixa para não crescer */
+            display: flex;
+            flex-direction: column;
         }
 
-        .historico-titulo {
-            font-weight: 700;
-            font-size: 10px;
-            text-transform: uppercase;
-            color: #A0AEC0;
-            margin-bottom: 10px;
-            display: block;
-            text-align: left;
-        }
+        .historico-titulo { font-weight: 700; font-size: 9px; text-transform: uppercase; color: #A0AEC0; margin-bottom: 5px; text-align: left; }
 
         .registro-grid {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr auto;
-            gap: 15px;
-            font-size: 12px;
-            padding: 8px 10px;
+            gap: 10px;
+            font-size: 11px;
+            padding: 4px 8px;
             border-bottom: 1px solid #edf2f7;
             text-align: left;
+            align-items: center;
         }
 
         .registro-grid:last-child { border-bottom: none; }
-        .registro-grid span b { color: var(--cor-destaque-loja); }
 
-        #btnOpenSolicitacao {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background: #2d3748;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 11px;
-        }
+        #btnOpenSolicitacao { position: fixed; bottom: 15px; left: 15px; background: #2d3748; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 10px; }
     </style>
 </head>
 <body>
@@ -178,14 +131,16 @@
         </div>
         <h1>Registro de Lacre</h1>
 
-        <form id="lacreForm">
+        <div id="mensagem-erro" class="alerta-erro"></div>
+
+        <form id="lacreForm" autocomplete="off">
             <div class="form-row">
                 <div class="column">
                     <label for="lacre">NÚMERO DO LACRE:</label>
-                    <input type="text" id="lacre" required placeholder="Digite o lacre">
+                    <input type="text" id="lacre" required autocomplete="off" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                     
                     <label for="confirmar-lacre">CONFIRMAR LACRE:</label>
-                    <input type="text" id="confirmar-lacre" required placeholder="Repita o lacre">
+                    <input type="text" id="confirmar-lacre" required autocomplete="off" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                 </div>
 
                 <div class="column">
@@ -194,7 +149,7 @@
                         <span id="trocarLoja" class="btn-trocar">TROCAR LOJA</span>
                     </div>
                     <select id="loja" required>
-                        <option value="" disabled selected>Selecione a unidade...</option>
+                        <option value="" disabled selected>Selecione...</option>
                         <option value="02 - Morada">02 - Morada</option>
                         <option value="05 - Visconde">05 - Visconde</option>
                         <option value="09 - Vinhedo">09 - Vinhedo</option>
@@ -207,17 +162,17 @@
                     </select>
 
                     <label for="operador">OPERADOR:</label>
-                    <input type="text" id="operador" required placeholder="Nome do operador" oninput="this.value = this.value.toUpperCase()">
+                    <input type="text" id="operador" required autocomplete="off" oninput="this.value = this.value.toUpperCase()">
                 </div>
             </div>
             
-            <button type="submit" id="btnGravar">REGISTRAR LACRE</button>
+            <button type="submit">REGISTRAR LACRE</button>
         </form>
 
         <div class="historico-caixa">
-            <span class="historico-titulo">Últimos 3 Registros no Navegador</span>
-            <div id="listaHistorico">
-                <div style="color: #A0AEC0; font-style: italic; font-size: 12px; padding: 10px;">Aguardando primeiro registro...</div>
+            <span class="historico-titulo">Últimos 3 registros</span>
+            <div id="listaHistorico" style="flex-grow: 1;">
+                <div style="color: #A0AEC0; font-style: italic; font-size: 11px; padding: 5px;">Sem registros recentes.</div>
             </div>
         </div>
     </div>
@@ -226,75 +181,83 @@
 
     <script>
         const form = document.getElementById('lacreForm');
+        const lacre = document.getElementById('lacre');
+        const confirmar = document.getElementById('confirmar-lacre');
+        const erroDiv = document.getElementById('mensagem-erro');
         const lojaSelect = document.getElementById('loja');
         const trocarBtn = document.getElementById('trocarLoja');
         const historicoContainer = document.getElementById('listaHistorico');
 
-        // Função para carregar Loja Fixa
         function verificarLojaFixa() {
             const lojaSalva = localStorage.getItem('lojaFixa');
             if (lojaSalva) {
                 lojaSelect.value = lojaSalva;
                 lojaSelect.classList.add('loja-fixada');
-                lojaSelect.disabled = true;
+                lojaSelect.style.pointerEvents = "none"; 
                 trocarBtn.style.display = 'block';
             }
         }
 
-        // Trocar Loja
         trocarBtn.addEventListener('click', () => {
-            lojaSelect.disabled = false;
+            lojaSelect.style.pointerEvents = "auto";
             lojaSelect.classList.remove('loja-fixada');
             lojaSelect.value = "";
             trocarBtn.style.display = 'none';
             localStorage.removeItem('lojaFixa');
         });
 
-        // Atualizar Histórico (Lacre, Operador, Hora)
         function atualizarHistorico() {
             const logs = JSON.parse(localStorage.getItem('ultimosLacres') || '[]');
             if (logs.length === 0) return;
-
             historicoContainer.innerHTML = logs.map(log => `
                 <div class="registro-grid">
                     <span><b>Lacre:</b> ${log.numero}</span>
                     <span><b>Operador:</b> ${log.operador}</span>
                     <span><b>Unidade:</b> ${log.loja.split(' - ')[1]}</span>
-                    <span style="color: #A0AEC0; font-weight: 600;">${log.hora}</span>
+                    <span style="color: #A0AEC0;">${log.hora}</span>
                 </div>
             `).join('');
         }
 
-        form.addEventListener('submit', (e) => {
-            // Se o campo estiver desabilitado (fixado), o form não envia o valor. 
-            // Precisamos habilitar rapidinho ou pegar o valor da variável.
-            const valorLoja = lojaSelect.value;
-            localStorage.setItem('lojaFixa', valorLoja);
+        form.addEventListener('submit', function(e) {
+            // VALIDAÇÃO DE IGUALDADE
+            if (lacre.value !== confirmar.value) {
+                e.preventDefault();
+                e.stopImmediatePropagation(); // Impede o envio para a planilha
+                erroDiv.innerText = "ERRO: Os números dos lacres não conferem!";
+                erroDiv.style.display = "block";
+                confirmar.focus();
+                return false;
+            }
 
+            erroDiv.style.display = "none";
+            
+            // CACHE DE LOJA E HISTÓRICO
+            localStorage.setItem('lojaFixa', lojaSelect.value);
             const novoLog = {
-                numero: document.getElementById('lacre').value,
+                numero: lacre.value,
                 operador: document.getElementById('operador').value,
-                loja: valorLoja,
+                loja: lojaSelect.value,
                 hora: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
             };
-
             let logs = JSON.parse(localStorage.getItem('ultimosLacres') || '[]');
             logs.unshift(novoLog);
             if (logs.length > 3) logs.pop();
-            
             localStorage.setItem('ultimosLacres', JSON.stringify(logs));
             
-            // Simula o comportamento pós-envio
-            verificarLojaFixa();
-            atualizarHistorico();
+            // O GIX/Planilha deve ter seu próprio listener no script.js. 
+            // Como este script não tem "preventDefault" se passar na validação, 
+            // ele permitirá que o script.js externo capture o evento de submit.
             
-            // Limpa apenas os campos de lacre
-            document.getElementById('lacre').value = "";
-            document.getElementById('confirmar-lacre').value = "";
-            document.getElementById('lacre').focus();
+            setTimeout(() => {
+                atualizarHistorico();
+                verificarLojaFixa();
+                lacre.value = "";
+                confirmar.value = "";
+                lacre.focus();
+            }, 500);
         });
 
-        // Inicialização
         verificarLojaFixa();
         atualizarHistorico();
     </script>
