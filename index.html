@@ -4,35 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro de Lacre - Tamandaré Tintas</title>
-    
-    <link rel="shortcut icon" type="image/png" href="favicon.png">
-    <link rel="icon" type="image/png" href="favicon.png">
 
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <style>
         :root {
             --cor-primaria: #D32F2F; 
             --cor-secundaria: #B71C1C;
-            --cor-destaque-loja: #1e3a5f;
             --cor-texto: #2D3748;
             --cor-fundo: #F4F7F6;
             --border-color: #E2E8F0;
         }
 
-        * { box-sizing: border-box; }
+        * {
+            box-sizing: border-box;
+        }
 
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--cor-fundo);
             color: var(--cor-texto);
             margin: 0;
-            height: 100vh;
+            padding: 20px;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            overflow: hidden;
+            min-height: 100vh;
+            padding-bottom: 80px; 
         }
 
         .container {
@@ -40,182 +42,233 @@
             border: 1px solid var(--border-color);
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            padding: 20px 35px;
-            width: 95%;
-            max-width: 800px;
+            padding: 35px 30px;
+            width: 100%;
+            max-width: 450px;
+            margin: 0 auto;
             text-align: center;
         }
 
-        .logo-container img { max-width: 120px; margin-bottom: 5px; }
-        h1 { font-size: 18px; margin: 0 0 15px 0; color: #4A5568; font-weight: 700; }
+        .logo-container img {
+            max-width: 180px;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            color: var(--cor-texto);
+            margin-bottom: 25px;
+            font-size: 22px;
+            font-weight: 700;
+            margin-top: 0;
+        }
 
         .alerta-erro {
             background-color: #FFF5F5;
             color: #C53030;
             border: 1px solid #FED7D7;
-            padding: 8px;
-            border-radius: 6px;
-            margin-bottom: 15px;
+            padding: 14px;
+            border-radius: 8px;
+            margin-bottom: 20px;
             font-weight: 600;
-            font-size: 13px;
+            font-size: 14px;
+            text-align: left;
             display: none; 
         }
 
-        .form-row { display: flex; gap: 25px; text-align: left; margin-bottom: 5px; }
-        .column { flex: 1; }
-
-        label { display: block; font-weight: 600; font-size: 11px; margin-bottom: 4px; color: #718096; }
-
-        input, select, textarea {
-            width: 100%;
-            padding: 8px 10px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            font-size: 14px;
-            margin-bottom: 10px;
-            font-family: inherit;
+        .form-field, .form-group {
+            text-align: left;
+            margin-bottom: 16px;
         }
 
-        select.loja-fixada {
-            background-color: var(--cor-destaque-loja) !important;
-            color: white !important;
+        label {
+            display: block;
             font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 6px;
+            color: #4A5568;
         }
 
-        .header-loja { display: flex; justify-content: space-between; align-items: center; }
-        .btn-trocar { color: var(--cor-primaria); font-size: 10px; font-weight: 700; cursor: pointer; display: none; }
+        input[type="text"], select, textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
+            background-color: #FFFFFF;
+            color: var(--cor-texto);
+            transition: all 0.2s ease;
+        }
 
-        button[type="submit"], #btnEnviarSolicitacao {
-            width: 40%;
-            padding: 12px;
-            font-weight: 700;
+        /* Padronização visual para Caixa Alta em Operador */
+        #operador {
+            text-transform: uppercase;
+        }
+
+        input[type="text"]:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--cor-primaria);
+            box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.15);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        button[type="submit"], #novoRegistroBtn {
+            width: 100%;
+            padding: 14px 24px;
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
             background-color: var(--cor-primaria);
             color: white;
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            margin-top: 5px;
-            transition: 0.2s;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(211, 47, 47, 0.2);
+            margin-top: 10px;
         }
-        #btnEnviarSolicitacao { width: 100%; }
 
-        button:hover { background-color: var(--cor-secundaria); }
+        button[type="submit"]:hover, #novoRegistroBtn:hover {
+            background-color: var(--cor-secundaria);
+            transform: translateY(-2px);
+        }
 
-        .historico-caixa {
-            margin-top: 15px;
-            background: #f8fafc;
-            border: 1px solid var(--border-color);
+        button[type="submit"]:active, #novoRegistroBtn:active {
+            transform: translateY(0);
+        }
+
+        #successMessage p {
+            font-size: 18px !important;
+            font-weight: 700;
+            color: #2F855A !important;
+            margin-bottom: 20px;
+            background-color: #F0FFF4;
+            padding: 15px;
             border-radius: 8px;
-            padding: 8px;
-            height: 110px;
-            display: flex;
-            flex-direction: column;
+            border: 1px solid #C6F6D5;
         }
 
-        .historico-titulo { font-weight: 700; font-size: 9px; text-transform: uppercase; color: #A0AEC0; margin-bottom: 5px; text-align: left; }
-
-        .registro-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr auto;
-            gap: 10px;
-            font-size: 11px;
-            padding: 4px 8px;
-            border-bottom: 1px solid #edf2f7;
-            text-align: left;
-            align-items: center;
+        #btnOpenSolicitacao {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background-color: #2D3748;
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.2s ease;
+            z-index: 100;
         }
-        .registro-grid:last-child { border-bottom: none; }
 
-        /* MODAL SOLICITAÇÃO */
-        #btnOpenSolicitacao { position: fixed; bottom: 15px; left: 15px; background: #2d3748; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600; }
-        
+        #btnOpenSolicitacao:hover {
+            background-color: #1A202C;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+        }
+
         .modal-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(3px);
             z-index: 1000;
-            backdrop-filter: blur(2px);
         }
+
         .modal-content {
             background: #fff;
-            padding: 25px;
+            padding: 30px;
             border-radius: 12px;
             width: 90%;
             max-width: 400px;
             position: absolute;
-            top: 50%; left: 50%;
+            top: 50%;
+            left: 50%;
             transform: translate(-50%, -50%);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
             text-align: left;
         }
-        .close-modal { float: right; font-size: 24px; cursor: pointer; color: #A0AEC0; line-height: 1; }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 26px;
+            font-weight: bold;
+            color: #A0AEC0;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .close-modal:hover {
+            color: var(--cor-primaria);
+        }
+
+        .modal-content h2 {
+            margin-top: 0;
+            font-size: 20px;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+        .modal-content p {
+            color: #718096;
+            font-size: 14px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        #msgRetorno {
+            margin-top: 15px;
+            font-weight: 600;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .footer {
+            margin-top: auto;
+            padding: 20px 15px;
+            color: #A0AEC0;
+            font-size: 13px;
+            width: 100%;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
-
     <div class="container">
         <div class="logo-container">
-            <img src="logo-tamandare.png" alt="Logo">
+            <img src="logo-tamandare.png" alt="Logo Tamandaré Tintas" onerror="this.style.display='none'">
         </div>
         <h1>Registro de Lacre</h1>
 
         <div id="mensagem-erro" class="alerta-erro"></div>
 
         <form id="lacreForm" autocomplete="off">
-            <div class="form-row">
-                <div class="column">
-                    <label for="lacre">NÚMERO DO LACRE:</label>
-                    <input type="text" id="lacre" name="lacre" required autocomplete="off" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
-                    
-                    <label for="confirmar-lacre">CONFIRMAR LACRE:</label>
-                    <input type="text" id="confirmar-lacre" name="confirmar-lacre" required autocomplete="off" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
-                </div>
-
-                <div class="column">
-                    <div class="header-loja">
-                        <label for="loja">LOJA:</label>
-                        <span id="trocarLoja" class="btn-trocar">TROCAR LOJA</span>
-                    </div>
-                    <select id="loja" name="loja" required>
-                        <option value="" disabled selected>Selecione...</option>
-                        <option value="02 - Morada">02 - Morada</option>
-                        <option value="05 - Visconde">05 - Visconde</option>
-                        <option value="09 - Vinhedo">09 - Vinhedo</option>
-                        <option value="10 - Conceição">10 - Conceição</option>
-                        <option value="12 - Elias Fausto">12 - Elias Fausto</option>
-                        <option value="13 - Maria José">13 - Maria José</option>
-                        <option value="14 - Paula Leite">14 - Paula Leite</option>
-                        <option value="15 - Salto">15 - Salto</option>
-                        <option value="16 - Itu">16 - Itu</option>
-                    </select>
-
-                    <label for="operador">OPERADOR:</label>
-                    <input type="text" id="operador" name="operador" required autocomplete="off" oninput="this.value = this.value.toUpperCase()">
-                </div>
+            <div class="form-field"> 
+                <label for="lacre">Número do Lacre:</label>
+                <input type="text" id="lacre" required autocomplete="off">
             </div>
-            <button type="submit">REGISTRAR LACRE</button>
-        </form>
-
-        <div class="historico-caixa">
-            <span class="historico-titulo">Últimos 3 registros</span>
-            <div id="listaHistorico" style="flex-grow: 1;">
-                <div style="color: #A0AEC0; font-style: italic; font-size: 11px; padding: 5px;">Aguardando registros...</div>
-            </div>
-        </div>
-    </div>
-
-    <button id="btnOpenSolicitacao" type="button">📦 Solicitar Lacres</button>
-
-    <div id="modalSolicitacao" class="modal-overlay">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h2 style="margin: 0 0 10px 0; font-size: 18px; color: var(--primary-color);">Solicitar Reposição</h2>
-            <p style="font-size: 13px; color: #718096; margin-bottom: 15px;">Peça mais lacres para sua unidade.</p>
             
-            <form id="formSolicitacao">
-                <label style="font-size: 11px; font-weight: 700;">LOJA:</label>
-                <select id="solicitacaoLoja" required>
-                    <option value="" disabled selected>Escolha...</option>
+            <div class="form-field">
+                <label for="confirmar-lacre">Confirmar Lacre:</label>
+                <input type="text" id="confirmar-lacre" required autocomplete="off">
+            </div>
+
+            <div class="form-field">
+                <label for="loja">Loja:</label>
+                <select id="loja" required>
+                    <option value="" disabled selected>Selecione a Loja</option>
                     <option value="02 - Morada">02 - Morada</option>
                     <option value="05 - Visconde">05 - Visconde</option>
                     <option value="09 - Vinhedo">09 - Vinhedo</option>
@@ -226,109 +279,68 @@
                     <option value="15 - Salto">15 - Salto</option>
                     <option value="16 - Itu">16 - Itu</option>
                 </select>
+            </div>
+            
+            <div class="form-field">
+                <label for="operador">Operador:</label>
+                <input type="text" id="operador" required autocomplete="off" oninput="this.value = this.value.toUpperCase()">
+            </div>
+            
+            <button type="submit">Registrar Lacre</button>
+        </form>
 
-                <label style="font-size: 11px; font-weight: 700;">QUEM ESTÁ PEDINDO?</label>
-                <input type="text" id="solicitacaoNome" required oninput="this.value = this.value.toUpperCase()">
+        <div id="successMessage" style="display:none; text-align: center;">
+            <p>Lacre registrado com sucesso!</p>
+            <button id="novoRegistroBtn">Novo Registro</button>
+        </div>
+    </div>
 
-                <label style="font-size: 11px; font-weight: 700;">OBSERVAÇÃO / QTD:</label>
-                <textarea id="solicitacaoObs" style="height: 60px; resize: none;"></textarea>
+    <div class="footer">
+        © 2026 Tamandaré Tintas. Operação Segura.
+    </div>
 
-                <button type="submit" id="btnEnviarSolicitacao">ENVIAR PEDIDO</button>
+    <button id="btnOpenSolicitacao" type="button">📦 Solicitar Lacres</button>
+
+    <div id="modalSolicitacao" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Solicitar Reposição</h2>
+            <p>Preencha para pedir mais lacres para sua loja.</p>
+            
+            <form id="formSolicitacao">
+                <div class="form-group">
+                    <label>Loja:</label>
+                    <select id="solicitacaoLoja" required>
+                        <option value="" disabled selected>Escolha...</option>
+                        <option value="02 - Morada">02 - Morada</option>
+                        <option value="05 - Visconde">05 - Visconde</option>
+                        <option value="09 - Vinhedo">09 - Vinhedo</option>
+                        <option value="10 - Conceição">10 - Conceição</option>
+                        <option value="12 - Elias Fausto">12 - Elias Fausto</option>
+                        <option value="13 - Maria José">13 - Maria José</option>
+                        <option value="14 - Paula Leite">14 - Paula Leite</option>
+                        <option value="15 - Salto">15 - Salto</option>
+                        <option value="16 - Itu">16 - Itu</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Quem está pedindo?</label>
+                    <input type="text" id="solicitacaoNome" placeholder="Seu nome" required oninput="this.value = this.value.toUpperCase()">
+                </div>
+
+                <div class="form-group">
+                    <label>Quantidade / Obs (Opcional):</label>
+                    <textarea id="solicitacaoObs" placeholder="Ex: Preciso de 2 pacotes urgentes"></textarea>
+                </div>
+
+                <button type="submit" id="btnEnviarSolicitacao">Enviar Pedido</button>
             </form>
-            <div id="msgRetorno" style="margin-top: 10px; font-size: 12px; font-weight: 700; text-align: center;"></div>
+            <div id="msgRetorno"></div>
         </div>
     </div>
 
     <script src="script.js"></script>
     <script src="solicitacao.js"></script>
-
-    <script>
-        // Lógica de Cache e Visuais
-        const form = document.getElementById('lacreForm');
-        const lacreInput = document.getElementById('lacre');
-        const confirmarInput = document.getElementById('confirmar-lacre');
-        const erroDiv = document.getElementById('mensagem-erro');
-        const lojaSelect = document.getElementById('loja');
-        const trocarBtn = document.getElementById('trocarLoja');
-        const historicoContainer = document.getElementById('listaHistorico');
-
-        function verificarLojaFixa() {
-            const lojaSalva = localStorage.getItem('lojaFixa');
-            if (lojaSalva) {
-                lojaSelect.value = lojaSalva;
-                lojaSelect.classList.add('loja-fixada');
-                lojaSelect.disabled = true;
-                trocarBtn.style.display = 'block';
-            }
-        }
-
-        trocarBtn.addEventListener('click', () => {
-            lojaSelect.disabled = false;
-            lojaSelect.classList.remove('loja-fixada');
-            lojaSelect.value = "";
-            trocarBtn.style.display = 'none';
-            localStorage.removeItem('lojaFixa');
-        });
-
-        function atualizarHistorico() {
-            const logs = JSON.parse(localStorage.getItem('ultimosLacres') || '[]');
-            if (logs.length === 0) return;
-            historicoContainer.innerHTML = logs.map(log => `
-                <div class="registro-grid">
-                    <span><b>Lacre:</b> ${log.numero}</span>
-                    <span><b>Op:</b> ${log.operador.split(' ')[0]}</span>
-                    <span><b>Unid:</b> ${log.loja.split(' - ')[1]}</span>
-                    <span style="color: #A0AEC0;">${log.hora}</span>
-                </div>
-            `).join('');
-        }
-
-        form.addEventListener('submit', function(e) {
-            if (lacreInput.value !== confirmarInput.value) {
-                e.preventDefault();
-                e.stopImmediatePropagation();
-                erroDiv.innerText = "ERRO: Os números dos lacres não conferem!";
-                erroDiv.style.display = "block";
-                confirmarInput.focus();
-                return false;
-            }
-            erroDiv.style.display = "none";
-            
-            const valorLoja = lojaSelect.value;
-            lojaSelect.disabled = false; 
-
-            localStorage.setItem('lojaFixa', valorLoja);
-            const novoLog = {
-                numero: lacreInput.value,
-                operador: document.getElementById('operador').value,
-                loja: valorLoja,
-                hora: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
-            };
-            let logs = JSON.parse(localStorage.getItem('ultimosLacres') || '[]');
-            logs.unshift(novoLog);
-            if (logs.length > 3) logs.pop();
-            localStorage.setItem('ultimosLacres', JSON.stringify(logs));
-
-            setTimeout(() => {
-                atualizarHistorico();
-                verificarLojaFixa();
-                lacreInput.value = "";
-                confirmarInput.value = "";
-                lacreInput.focus();
-            }, 100);
-        });
-
-        // Lógica de Abrir/Fechar Modal (Exigido pelo solicitacao.js)
-        const modal = document.getElementById('modalSolicitacao');
-        const btnOpen = document.getElementById('btnOpenSolicitacao');
-        const btnClose = document.querySelector('.close-modal');
-
-        btnOpen.onclick = () => modal.style.display = "block";
-        btnClose.onclick = () => modal.style.display = "none";
-        window.onclick = (e) => { if (e.target == modal) modal.style.display = "none"; }
-
-        verificarLojaFixa();
-        atualizarHistorico();
-    </script>
 </body>
 </html>
