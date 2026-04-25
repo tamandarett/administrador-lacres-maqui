@@ -4,14 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro de Lacre - Tamandaré Tintas</title>
+    
     <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="icon" type="image/png" href="favicon.png">
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <style>
         :root {
             --cor-primaria: #D32F2F; 
             --cor-secundaria: #B71C1C;
-            --cor-destaque-loja: #2C5282;
+            --cor-destaque-loja: #1e3a5f;
             --cor-texto: #2D3748;
             --cor-fundo: #F4F7F6;
             --border-color: #E2E8F0;
@@ -43,7 +47,6 @@
         }
 
         .logo-container img { max-width: 120px; margin-bottom: 5px; }
-
         h1 { font-size: 18px; margin: 0 0 15px 0; color: #4A5568; font-weight: 700; }
 
         .alerta-erro {
@@ -63,25 +66,26 @@
 
         label { display: block; font-weight: 600; font-size: 11px; margin-bottom: 4px; color: #718096; }
 
-        input, select {
+        input, select, textarea {
             width: 100%;
             padding: 8px 10px;
             border: 1px solid var(--border-color);
             border-radius: 6px;
             font-size: 14px;
             margin-bottom: 10px;
+            font-family: inherit;
         }
 
         select.loja-fixada {
-            background-color: var(--cor-destaque-loja);
-            color: white;
+            background-color: var(--cor-destaque-loja) !important;
+            color: white !important;
             font-weight: 600;
         }
 
         .header-loja { display: flex; justify-content: space-between; align-items: center; }
         .btn-trocar { color: var(--cor-primaria); font-size: 10px; font-weight: 700; cursor: pointer; display: none; }
 
-        button[type="submit"] {
+        button[type="submit"], #btnEnviarSolicitacao {
             width: 40%;
             padding: 12px;
             font-weight: 700;
@@ -91,16 +95,19 @@
             border-radius: 8px;
             cursor: pointer;
             margin-top: 5px;
+            transition: 0.2s;
         }
+        #btnEnviarSolicitacao { width: 100%; }
 
-        /* Quadro de Histórico Fixo e Compacto */
+        button:hover { background-color: var(--cor-secundaria); }
+
         .historico-caixa {
             margin-top: 15px;
             background: #f8fafc;
             border: 1px solid var(--border-color);
             border-radius: 8px;
             padding: 8px;
-            height: 110px; /* Altura fixa para não crescer */
+            height: 110px;
             display: flex;
             flex-direction: column;
         }
@@ -117,10 +124,31 @@
             text-align: left;
             align-items: center;
         }
-
         .registro-grid:last-child { border-bottom: none; }
 
-        #btnOpenSolicitacao { position: fixed; bottom: 15px; left: 15px; background: #2d3748; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 10px; }
+        /* MODAL SOLICITAÇÃO */
+        #btnOpenSolicitacao { position: fixed; bottom: 15px; left: 15px; background: #2d3748; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600; }
+        
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+            backdrop-filter: blur(2px);
+        }
+        .modal-content {
+            background: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: left;
+        }
+        .close-modal { float: right; font-size: 24px; cursor: pointer; color: #A0AEC0; line-height: 1; }
     </style>
 </head>
 <body>
@@ -137,10 +165,10 @@
             <div class="form-row">
                 <div class="column">
                     <label for="lacre">NÚMERO DO LACRE:</label>
-                    <input type="text" id="lacre" required autocomplete="off" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                    <input type="text" id="lacre" name="lacre" required autocomplete="off" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                     
                     <label for="confirmar-lacre">CONFIRMAR LACRE:</label>
-                    <input type="text" id="confirmar-lacre" required autocomplete="off" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                    <input type="text" id="confirmar-lacre" name="confirmar-lacre" required autocomplete="off" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                 </div>
 
                 <div class="column">
@@ -148,7 +176,7 @@
                         <label for="loja">LOJA:</label>
                         <span id="trocarLoja" class="btn-trocar">TROCAR LOJA</span>
                     </div>
-                    <select id="loja" required>
+                    <select id="loja" name="loja" required>
                         <option value="" disabled selected>Selecione...</option>
                         <option value="02 - Morada">02 - Morada</option>
                         <option value="05 - Visconde">05 - Visconde</option>
@@ -162,27 +190,63 @@
                     </select>
 
                     <label for="operador">OPERADOR:</label>
-                    <input type="text" id="operador" required autocomplete="off" oninput="this.value = this.value.toUpperCase()">
+                    <input type="text" id="operador" name="operador" required autocomplete="off" oninput="this.value = this.value.toUpperCase()">
                 </div>
             </div>
-            
             <button type="submit">REGISTRAR LACRE</button>
         </form>
 
         <div class="historico-caixa">
             <span class="historico-titulo">Últimos 3 registros</span>
             <div id="listaHistorico" style="flex-grow: 1;">
-                <div style="color: #A0AEC0; font-style: italic; font-size: 11px; padding: 5px;">Sem registros recentes.</div>
+                <div style="color: #A0AEC0; font-style: italic; font-size: 11px; padding: 5px;">Aguardando registros...</div>
             </div>
         </div>
     </div>
 
     <button id="btnOpenSolicitacao" type="button">📦 Solicitar Lacres</button>
 
+    <div id="modalSolicitacao" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 style="margin: 0 0 10px 0; font-size: 18px; color: var(--primary-color);">Solicitar Reposição</h2>
+            <p style="font-size: 13px; color: #718096; margin-bottom: 15px;">Peça mais lacres para sua unidade.</p>
+            
+            <form id="formSolicitacao">
+                <label style="font-size: 11px; font-weight: 700;">LOJA:</label>
+                <select id="solicitacaoLoja" required>
+                    <option value="" disabled selected>Escolha...</option>
+                    <option value="02 - Morada">02 - Morada</option>
+                    <option value="05 - Visconde">05 - Visconde</option>
+                    <option value="09 - Vinhedo">09 - Vinhedo</option>
+                    <option value="10 - Conceição">10 - Conceição</option>
+                    <option value="12 - Elias Fausto">12 - Elias Fausto</option>
+                    <option value="13 - Maria José">13 - Maria José</option>
+                    <option value="14 - Paula Leite">14 - Paula Leite</option>
+                    <option value="15 - Salto">15 - Salto</option>
+                    <option value="16 - Itu">16 - Itu</option>
+                </select>
+
+                <label style="font-size: 11px; font-weight: 700;">QUEM ESTÁ PEDINDO?</label>
+                <input type="text" id="solicitacaoNome" required oninput="this.value = this.value.toUpperCase()">
+
+                <label style="font-size: 11px; font-weight: 700;">OBSERVAÇÃO / QTD:</label>
+                <textarea id="solicitacaoObs" style="height: 60px; resize: none;"></textarea>
+
+                <button type="submit" id="btnEnviarSolicitacao">ENVIAR PEDIDO</button>
+            </form>
+            <div id="msgRetorno" style="margin-top: 10px; font-size: 12px; font-weight: 700; text-align: center;"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="solicitacao.js"></script>
+
     <script>
+        // Lógica de Cache e Visuais
         const form = document.getElementById('lacreForm');
-        const lacre = document.getElementById('lacre');
-        const confirmar = document.getElementById('confirmar-lacre');
+        const lacreInput = document.getElementById('lacre');
+        const confirmarInput = document.getElementById('confirmar-lacre');
         const erroDiv = document.getElementById('mensagem-erro');
         const lojaSelect = document.getElementById('loja');
         const trocarBtn = document.getElementById('trocarLoja');
@@ -193,13 +257,13 @@
             if (lojaSalva) {
                 lojaSelect.value = lojaSalva;
                 lojaSelect.classList.add('loja-fixada');
-                lojaSelect.style.pointerEvents = "none"; 
+                lojaSelect.disabled = true;
                 trocarBtn.style.display = 'block';
             }
         }
 
         trocarBtn.addEventListener('click', () => {
-            lojaSelect.style.pointerEvents = "auto";
+            lojaSelect.disabled = false;
             lojaSelect.classList.remove('loja-fixada');
             lojaSelect.value = "";
             trocarBtn.style.display = 'none';
@@ -212,51 +276,56 @@
             historicoContainer.innerHTML = logs.map(log => `
                 <div class="registro-grid">
                     <span><b>Lacre:</b> ${log.numero}</span>
-                    <span><b>Operador:</b> ${log.operador}</span>
-                    <span><b>Unidade:</b> ${log.loja.split(' - ')[1]}</span>
+                    <span><b>Op:</b> ${log.operador.split(' ')[0]}</span>
+                    <span><b>Unid:</b> ${log.loja.split(' - ')[1]}</span>
                     <span style="color: #A0AEC0;">${log.hora}</span>
                 </div>
             `).join('');
         }
 
         form.addEventListener('submit', function(e) {
-            // VALIDAÇÃO DE IGUALDADE
-            if (lacre.value !== confirmar.value) {
+            if (lacreInput.value !== confirmarInput.value) {
                 e.preventDefault();
-                e.stopImmediatePropagation(); // Impede o envio para a planilha
+                e.stopImmediatePropagation();
                 erroDiv.innerText = "ERRO: Os números dos lacres não conferem!";
                 erroDiv.style.display = "block";
-                confirmar.focus();
+                confirmarInput.focus();
                 return false;
             }
-
             erroDiv.style.display = "none";
             
-            // CACHE DE LOJA E HISTÓRICO
-            localStorage.setItem('lojaFixa', lojaSelect.value);
+            const valorLoja = lojaSelect.value;
+            lojaSelect.disabled = false; 
+
+            localStorage.setItem('lojaFixa', valorLoja);
             const novoLog = {
-                numero: lacre.value,
+                numero: lacreInput.value,
                 operador: document.getElementById('operador').value,
-                loja: lojaSelect.value,
+                loja: valorLoja,
                 hora: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
             };
             let logs = JSON.parse(localStorage.getItem('ultimosLacres') || '[]');
             logs.unshift(novoLog);
             if (logs.length > 3) logs.pop();
             localStorage.setItem('ultimosLacres', JSON.stringify(logs));
-            
-            // O GIX/Planilha deve ter seu próprio listener no script.js. 
-            // Como este script não tem "preventDefault" se passar na validação, 
-            // ele permitirá que o script.js externo capture o evento de submit.
-            
+
             setTimeout(() => {
                 atualizarHistorico();
                 verificarLojaFixa();
-                lacre.value = "";
-                confirmar.value = "";
-                lacre.focus();
-            }, 500);
+                lacreInput.value = "";
+                confirmarInput.value = "";
+                lacreInput.focus();
+            }, 100);
         });
+
+        // Lógica de Abrir/Fechar Modal (Exigido pelo solicitacao.js)
+        const modal = document.getElementById('modalSolicitacao');
+        const btnOpen = document.getElementById('btnOpenSolicitacao');
+        const btnClose = document.querySelector('.close-modal');
+
+        btnOpen.onclick = () => modal.style.display = "block";
+        btnClose.onclick = () => modal.style.display = "none";
+        window.onclick = (e) => { if (e.target == modal) modal.style.display = "none"; }
 
         verificarLojaFixa();
         atualizarHistorico();
