@@ -1,15 +1,16 @@
-// URL da API (Script do Google Sheets)
+// ============================================================
+// SCRIPT DE SOLICITAÇÃO (CORRIGIDO)
+// ============================================================
 const URL_API_SOLICITACAO = "https://script.google.com/macros/s/AKfycbzUnBsMDJ0xxXcX_tJUxwLDpVgtK6PvpgvZ7KgTb-Zj2-q2FsekKDO11yZWHQXtTD3h/exec";
 
-// Elementos da tela
 const btnAbrir = document.getElementById("btnOpenSolicitacao");
 const modal = document.getElementById("modalSolicitacao");
 const btnFechar = document.querySelector(".close-modal");
 const formSolicitacao = document.getElementById("formSolicitacao");
 const msgRetorno = document.getElementById("msgRetorno");
+// Agora o ID existe no HTML
 const btnEnviar = document.getElementById("btnEnviarSolicitacao");
 
-// 1. Abrir o Modal
 if(btnAbrir) {
     btnAbrir.onclick = function() {
         modal.style.display = "block";
@@ -17,59 +18,62 @@ if(btnAbrir) {
     }
 }
 
-// 2. Fechar o Modal no X
 if(btnFechar) {
     btnFechar.onclick = function() {
         modal.style.display = "none";
     }
 }
 
-// 3. Fechar se clicar fora da caixinha
 window.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
-  }
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
 }
 
-// 4. Enviar os dados
 if(formSolicitacao) {
     formSolicitacao.onsubmit = function(event) {
-    event.preventDefault(); 
-
-    // Feedback visual
-    btnEnviar.innerText = "Enviando...";
-    btnEnviar.disabled = true;
-
-    // Coleta dados
-    const dados = {
-        loja: document.getElementById("solicitacaoLoja").value,
-        solicitante: document.getElementById("solicitacaoNome").value,
-        obs: document.getElementById("solicitacaoObs").value
-    };
-
-    // Envia para o Google Sheets
-    fetch(URL_API_SOLICITACAO, {
-        method: "POST",
-        body: JSON.stringify(dados)
-    })
-    .then(response => {
-        msgRetorno.style.color = "green";
-        msgRetorno.innerText = "✅ Pedido enviado com sucesso!";
-        formSolicitacao.reset();
+        event.preventDefault(); 
         
-        setTimeout(() => {
-            btnEnviar.innerText = "Enviar Pedido";
-            btnEnviar.disabled = false;
-            modal.style.display = "none";
-            msgRetorno.innerText = "";
-        }, 2000);
-    })
-    .catch(error => {
-        console.error("Erro:", error);
-        msgRetorno.style.color = "red";
-        msgRetorno.innerText = "❌ Erro ao enviar.";
-        btnEnviar.innerText = "Enviar Pedido";
-        btnEnviar.disabled = false;
-    });
-    }
+        // Feedback visual seguro
+        if(btnEnviar) {
+            btnEnviar.innerText = "Enviando...";
+            btnEnviar.disabled = true;
+        }
+
+        const dados = {
+            loja: document.getElementById("solicitacaoLoja").value,
+            solicitante: document.getElementById("solicitacaoNome").value,
+            obs: document.getElementById("solicitacaoObs").value
+        };
+
+        fetch(URL_API_SOLICITACAO, {
+            method: "POST",
+            mode: 'no-cors', // Adicionado para evitar erro de CORS comum no Apps Script
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(dados)
+        })
+        .then(() => {
+            msgRetorno.style.color = "green";
+            msgRetorno.innerText = "✅ Pedido enviado com sucesso!";
+            formSolicitacao.reset();
+            
+            setTimeout(() => {
+                if(btnEnviar) {
+                    btnEnviar.innerText = "ENVIAR PEDIDO";
+                    btnEnviar.disabled = false;
+                }
+                modal.style.display = "none";
+                msgRetorno.innerText = "";
+            }, 2500);
+        })
+        .catch(error => {
+            console.error("Erro:", error);
+            msgRetorno.style.color = "red";
+            msgRetorno.innerText = "❌ Erro ao enviar.";
+            if(btnEnviar) {
+                btnEnviar.innerText = "ENVIAR PEDIDO";
+                btnEnviar.disabled = false;
+            }
+        });
+    };
 }
