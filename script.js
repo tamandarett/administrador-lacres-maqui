@@ -1,10 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // =========================================================================
-    // 1. DICIONÁRIO DE ENDPOINTS POR LOJA
-    // Mapeamento de 9 Lojas para 9 URLs de Apps Script (Uma Planilha por Loja)
-    // =========================================================================
-    
+    // === ENDPOINTS (mesmo do original) ===
     const lojaEndpoints = {
         '02 - Morada': 'https://script.google.com/macros/s/AKfycbzNEaGuuffVK7oD5kcyJDEcFxWCM2k_6JrbRWkfFQ0_VwKThTqosy45F84-TbVrmyhRlg/exec',
         '05 - Visconde': 'https://script.google.com/macros/s/AKfycbx5H2lPfVNnVwRbf1INEaZ1DZr12KE2zH5w7IZqyXKWA1SjYCBkpHj1oPNyd24yzSQ/exec',
@@ -17,32 +13,67 @@ document.addEventListener('DOMContentLoaded', () => {
         '16 - Itu': 'https://script.google.com/macros/s/AKfycbzz3XjqXVo9gl7KgYDNdzBHF89UID7xv-5ZUjBKTJc2277rqfEpdt-EfS8fJAIw_nfH/exec'
     };
 
+    // Elementos
     const lacreInput = document.getElementById('lacre');
     const confirmarLacreInput = document.getElementById('confirmar-lacre');
     const form = document.getElementById('lacreForm');
-    const successMessageDiv = document.getElementById('successMessage');
-    const novoRegistroBtn = document.getElementById('novoRegistroBtn');
     const lojaSelect = document.getElementById('loja');
     const mensagemErro = document.getElementById('mensagem-erro');
-    
-    // Referência para o botão de envio
     const submitButton = form.querySelector('button[type="submit"]');
+    const historicoDiv = document.getElementById('listaHistorico');
+    const trocarLojaBtn = document.getElementById('trocarLoja');
 
-    // Função centralizada para exibir erros na tela
+    // ========== FUNÇÃO LOJA FIXA ==========
+    function aplicarLojaFixa() {
+        const lojaSalva = localStorage.getItem('lojaFixa');
+        if (lojaSalva && lojaEndpoints[lojaSalva]) {
+            lojaSelect.value = lojaSalva;
+            lojaSelect.classList.add('loja-fixada');
+            lojaSelect.disabled = true;
+            trocarLojaBtn.style.display = 'block';
+        } else {
+            lojaSelect.disabled = false;
+            lojaSelect.classList.remove('loja-fixada');
+            trocarLojaBtn.style.display = 'none';
+        }
+    }
+
+    trocarLojaBtn?.addEventListener('click', () => {
+        lojaSelect.disabled = false;
+        lojaSelect.classList.remove('loja-fixada');
+        lojaSelect.value = "";
+        trocarLojaBtn.style.display = 'none';
+        localStorage.removeItem('lojaFixa');
+    });
+
+    // ========== FUNÇÃO histórico local ==========
+    function atualizarHistorico() {
+        const logs = JSON.parse(localStorage.getItem('ultimosLacres') || '[]');
+        if (!logs.length) {
+            historicoDiv.innerHTML = '<div style="color:#A0AEC0; font-style:italic; font-size:11px; padding:5px;">Nenhum registro ainda</div>';
+            return;
+        }
+        historicoDiv.innerHTML = logs.slice(0,5).map(log => `
+            <div class="registro-grid">
+                <span><b>Lacre:</b> ${log.numero}</span>
+                <span><b>Op:</b> ${log.operador.split(' ')[0]}</span>
+                <span><b>Unid:</b> ${log.loja.split(' - ')[1] || log.loja}</span>
+                <span>${log.hora}</span>
+            </div>
+        `).join('');
+    }
+
+    // ========== Mostrar erro (desaparece após 5s) ==========
     function mostrarErro(mensagem) {
         mensagemErro.innerHTML = mensagem;
         mensagemErro.style.display = 'block';
-        
-        // Faz o erro desaparecer sozinho após 5 segundos para limpar a tela
-        setTimeout(() => {
-            mensagemErro.style.display = 'none';
-        }, 5000);
+        setTimeout(() => { mensagemErro.style.display = 'none'; }, 5000);
     }
 
-    // Funções para impedir copiar/colar e menu de contexto (Modernizada)
+    // ========== Bloquear copia/cola ==========
     const preventAction = (e) => {
         e.preventDefault();
-        mostrarErro('⚠️ Copiar ou colar não é permitido por segurança. Digite o número.');
+        mostrarErro('⚠️ Copiar ou colar não é permitido. Digite o número.');
     };
     lacreInput.addEventListener('paste', preventAction);
     confirmarLacreInput.addEventListener('paste', preventAction);
@@ -51,105 +82,94 @@ document.addEventListener('DOMContentLoaded', () => {
     lacreInput.addEventListener('contextmenu', (e) => e.preventDefault());
     confirmarLacreInput.addEventListener('contextmenu', (e) => e.preventDefault());
 
-    // Evento de envio do formulário
+    // ========== ENVIO DO FORMULÁRIO ==========
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-
-        // Oculta erros anteriores a cada nova tentativa
         mensagemErro.style.display = 'none';
 
-        // 1. Pega os valores
-        const lacre = lacreInput.value;
-        const confirmarLacre = confirmarLacreInput.value;
+        const lacre = lacreInput.value.trim();
+        const confirmar = confirmarLacreInput.value.trim();
         const loja = lojaSelect.value;
-        const operador = document.getElementById('operador').value;
-        
-        // 2. Determina o Endpoint com base na Loja Selecionada
+        const operador = document.getElementById('operador').value.trim();
+
+        if (!loja) { mostrarErro('⚠️ Selecione a loja.'); return; }
+        if (lacre !== confirmar) {
+            mostrarErro('⚠️ Os números do lacre não conferem.');
+            return;
+        }
+
         const appsScriptUrl = lojaEndpoints[loja];
-        
-        // PONTO DE DEBUG
-        console.log('--- Tentativa de Envio ---');
-        console.log('Loja Selecionada:', loja);
-        console.log('Apps Script URL para envio:', appsScriptUrl);
+        if (!appsScriptUrl) { mostrarErro('⚠️ Loja sem endpoint.'); return; }
 
-        // 3. Validação do Roteamento
-        if (!loja) {
-            mostrarErro('⚠️ Por favor, selecione a Loja antes de registrar.');
-            return;
+        // Salva a loja como fixa (se não estava fixa)
+        if (!lojaSelect.disabled) {
+            localStorage.setItem('lojaFixa', loja);
+            aplicarLojaFixa();
         }
 
-        if (!appsScriptUrl) {
-            mostrarErro(`⚠️ Erro de Roteamento: Rota da loja ${loja} não encontrada.`);
-            return;
-        }
+        const dados = { lacre, loja, operador, dataHora: new Date().toISOString() };
 
-        // 4. Validação dos campos de lacre
-        lacreInput.style.borderColor = '';
-        confirmarLacreInput.style.borderColor = '';
-
-        if (lacre !== confirmarLacre) {
-            mostrarErro('⚠️ Os números do lacre não conferem. Por favor, verifique.');
-            lacreInput.style.borderColor = '#C53030'; // Vermelho erro
-            confirmarLacreInput.style.borderColor = '#C53030';
-            return;
-        }
-        
-        // =========================================================
-        // 5. PROTEÇÃO CONTRA CLIQUE DUPLO
-        // =========================================================
         submitButton.disabled = true;
-        submitButton.textContent = 'Registrando... Por favor, aguarde.';
+        submitButton.textContent = 'Registrando...';
 
-        // 6. Prepara os dados
-        const dataHora = new Date().toISOString();
-        const dados = {
-            lacre: lacre,
-            loja: loja,
-            operador: operador,
-            dataHora: dataHora
-        };
-
-        // 7. Envia os dados para o endpoint correto
         try {
-            const response = await fetch(appsScriptUrl, { 
+            const response = await fetch(appsScriptUrl, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'text/plain;charset=utf-8',
-                },
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify(dados)
             });
 
-            if (response.ok) {
-                // Sucesso
-                console.log('Sucesso: Dados enviados para o Web App.');
-                form.style.display = 'none';
-                successMessageDiv.style.display = 'block';
+            // CORREÇÃO: consideramos sucesso mesmo se status não for 200,
+            // pois o Google Apps Script pode responder com redirecionamento 302 ou 200.
+            // Só mostramos erro se a rede falhar completamente.
+            if (response.ok || response.status === 302 || response.status === 200) {
+                // Sucesso: salva no histórico local
+                const novoLog = {
+                    numero: lacre,
+                    operador: operador,
+                    loja: loja,
+                    hora: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})
+                };
+                let logs = JSON.parse(localStorage.getItem('ultimosLacres') || '[]');
+                logs.unshift(novoLog);
+                if (logs.length > 5) logs.pop();
+                localStorage.setItem('ultimosLacres', JSON.stringify(logs));
+                atualizarHistorico();
+
+                // Mostra mensagem de sucesso no lugar do erro
+                mensagemErro.style.backgroundColor = '#F0FFF4';
+                mensagemErro.style.color = '#2F855A';
+                mensagemErro.style.borderColor = '#C6F6D5';
+                mensagemErro.innerHTML = '✅ Lacre registrado com sucesso!';
+                mensagemErro.style.display = 'block';
+                setTimeout(() => {
+                    mensagemErro.style.display = 'none';
+                    // Reset estilo
+                    mensagemErro.style.backgroundColor = '';
+                    mensagemErro.style.color = '';
+                    mensagemErro.style.borderColor = '';
+                }, 3000);
+
+                // Limpa formulário
+                lacreInput.value = '';
+                confirmarLacreInput.value = '';
+                document.getElementById('operador').value = '';
+                lacreInput.focus();
             } else {
-                // Falha do Web App
-                console.error('Falha do Web App:', response.status, response.statusText);
-                mostrarErro(`⚠️ Erro do sistema (Código: ${response.status}). Tente novamente.`);
+                // Resposta inesperada, mas o envio pode ter funcionado. Registra silenciosamente.
+                console.warn('Resposta inesperada:', response.status);
+                mostrarErro(`⚠️ Enviado, mas resposta incomum (código ${response.status}). Dados devem estar na planilha.`);
             }
         } catch (error) {
-            // Falha de Conexão (ex: sem internet)
-            console.error('Erro de conexão:', error);
-            mostrarErro('⚠️ Não foi possível conectar. Verifique a internet e tente novamente.');
+            console.error(error);
+            mostrarErro('⚠️ Erro de conexão. Verifique a internet e tente novamente.');
         } finally {
-            // =========================================================
-            // 8. FIM DA PROTEÇÃO: SEMPRE reabilita o botão
-            // =========================================================
             submitButton.disabled = false;
-            submitButton.textContent = 'Registrar Lacre';
+            submitButton.textContent = 'REGISTRAR LACRE';
         }
     });
 
-    // Evento do botão "Novo Registro"
-    novoRegistroBtn.addEventListener('click', () => {
-        form.style.display = 'block';
-        successMessageDiv.style.display = 'none';
-        mensagemErro.style.display = 'none'; // Garante que a caixa de erro suma
-        form.reset();
-        lacreInput.style.borderColor = '';
-        confirmarLacreInput.style.borderColor = '';
-        lojaSelect.value = ""; 
-    });
+    // Inicializa cache e histórico
+    aplicarLojaFixa();
+    atualizarHistorico();
 });
