@@ -1,6 +1,178 @@
-document.addEventListener('DOMContentLoaded', () => {
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Lacre - Tamandaré Tintas</title>
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #F4F7F6;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            padding: 20px 35px;
+            width: 95%;
+            max-width: 800px;
+            text-align: center;
+        }
+        .logo-container img { max-width: 120px; margin-bottom: 5px; }
+        h1 { font-size: 18px; margin: 0 0 15px 0; color: #4A5568; font-weight: 700; }
+        .alerta-erro {
+            background: #FFF5F5; color: #C53030; border: 1px solid #FED7D7;
+            padding: 8px; border-radius: 6px; margin-bottom: 15px;
+            font-weight: 600; font-size: 13px; display: none;
+        }
+        .form-row { display: flex; gap: 25px; text-align: left; margin-bottom: 5px; }
+        .column { flex: 1; }
+        label { font-weight: 600; font-size: 11px; margin-bottom: 4px; color: #718096; display: block; }
+        input, select {
+            width: 100%; padding: 8px 10px; border: 1px solid #E2E8F0; border-radius: 6px;
+            font-size: 14px; margin-bottom: 10px;
+        }
+        select.loja-fixada {
+            background-color: #1e3a5f !important; color: white !important; font-weight: 600;
+        }
+        .header-loja { display: flex; justify-content: space-between; align-items: center; }
+        .btn-trocar { color: #D32F2F; font-size: 10px; font-weight: 700; cursor: pointer; display: none; }
+        button[type="submit"] {
+            width: 40%; padding: 12px; font-weight: 700; background: #D32F2F; color: white;
+            border: none; border-radius: 8px; cursor: pointer; margin-top: 5px;
+        }
+        button:hover { background: #B71C1C; }
+        .historico-caixa {
+            margin-top: 15px;
+            background: #f8fafc;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 8px;
+            height: auto;  /* sem scroll, altura ajustável */
+            overflow: visible;
+        }
+        .historico-titulo {
+            font-weight: 700;
+            font-size: 9px;
+            color: #A0AEC0;
+            text-align: left;
+            margin-bottom: 5px;
+        }
+        .registro-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr; /* data/hora | operador | lacre */
+            gap: 10px;
+            font-size: 11px;
+            padding: 6px 8px;
+            border-bottom: 1px solid #edf2f7;
+            text-align: left;
+            align-items: center;
+        }
+        .registro-grid:last-child { border-bottom: none; }
+        #btnOpenSolicitacao {
+            position: fixed; bottom: 15px; left: 15px; background: #2d3748; color: white;
+            border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer;
+            font-size: 13px; font-weight: 600;
+        }
+        .modal-overlay {
+            display: none; position: fixed; top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.6); z-index: 1000; backdrop-filter: blur(2px);
+        }
+        .modal-content {
+            background: #fff; padding: 25px; border-radius: 12px; width: 90%; max-width: 400px;
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            text-align: left;
+        }
+        .close-modal { float: right; font-size: 24px; cursor: pointer; color: #A0AEC0; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="logo-container"><img src="logo-tamandare.png" alt="Logo"></div>
+    <h1>Registro de Lacre</h1>
+    <div id="mensagem-erro" class="alerta-erro"></div>
+    <form id="lacreForm" autocomplete="off">
+        <div class="form-row">
+            <div class="column">
+                <label>NÚMERO DO LACRE:</label>
+                <input type="text" id="lacre" required autocomplete="off" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                <label>CONFIRMAR LACRE:</label>
+                <input type="text" id="confirmar-lacre" required autocomplete="off" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+            </div>
+            <div class="column">
+                <div class="header-loja">
+                    <label>LOJA:</label>
+                    <span id="trocarLoja" class="btn-trocar">TROCAR LOJA</span>
+                </div>
+                <select id="loja" required>
+                    <option value="" disabled selected>Selecione...</option>
+                    <option value="02 - Morada">02 - Morada</option>
+                    <option value="05 - Visconde">05 - Visconde</option>
+                    <option value="09 - Vinhedo">09 - Vinhedo</option>
+                    <option value="10 - Conceição">10 - Conceição</option>
+                    <option value="12 - Elias Fausto">12 - Elias Fausto</option>
+                    <option value="13 - Maria José">13 - Maria José</option>
+                    <option value="14 - Paula Leite">14 - Paula Leite</option>
+                    <option value="15 - Salto">15 - Salto</option>
+                    <option value="16 - Itu">16 - Itu</option>
+                </select>
+                <label>OPERADOR:</label>
+                <input type="text" id="operador" required oninput="this.value = this.value.toUpperCase()">
+            </div>
+        </div>
+        <button type="submit">REGISTRAR LACRE</button>
+    </form>
+    <div class="historico-caixa">
+        <div class="historico-titulo">ÚLTIMOS 3 REGISTROS</div>
+        <div id="listaHistorico">
+            <div style="color:#A0AEC0; font-style:italic; font-size:11px; padding:5px;">Nenhum registro ainda</div>
+        </div>
+    </div>
+</div>
 
-    // === ENDPOINTS (mesmo do original) ===
+<button id="btnOpenSolicitacao" type="button">📦 Solicitar Lacres</button>
+<div id="modalSolicitacao" class="modal-overlay">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2>Solicitar Reposição</h2>
+        <form id="formSolicitacao">
+            <label>LOJA:</label>
+            <select id="solicitacaoLoja" required>
+                <option value="" disabled selected>Escolha...</option>
+                <option value="02 - Morada">02 - Morada</option>
+                <option value="05 - Visconde">05 - Visconde</option>
+                <option value="09 - Vinhedo">09 - Vinhedo</option>
+                <option value="10 - Conceição">10 - Conceição</option>
+                <option value="12 - Elias Fausto">12 - Elias Fausto</option>
+                <option value="13 - Maria José">13 - Maria José</option>
+                <option value="14 - Paula Leite">14 - Paula Leite</option>
+                <option value="15 - Salto">15 - Salto</option>
+                <option value="16 - Itu">16 - Itu</option>
+            </select>
+            <label>QUEM ESTÁ PEDINDO?</label>
+            <input type="text" id="solicitacaoNome" required oninput="this.value = this.value.toUpperCase()">
+            <label>OBSERVAÇÃO / QTD:</label>
+            <textarea id="solicitacaoObs" style="height:60px; resize:none;"></textarea>
+            <button type="submit">ENVIAR PEDIDO</button>
+        </form>
+        <div id="msgRetorno" style="margin-top:10px; font-size:12px; font-weight:bold; text-align:center;"></div>
+    </div>
+</div>
+
+<script>
+// ============================================================
+// SCRIPT PRINCIPAL (cache, histórico, envio)
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
     const lojaEndpoints = {
         '02 - Morada': 'https://script.google.com/macros/s/AKfycbzNEaGuuffVK7oD5kcyJDEcFxWCM2k_6JrbRWkfFQ0_VwKThTqosy45F84-TbVrmyhRlg/exec',
         '05 - Visconde': 'https://script.google.com/macros/s/AKfycbx5H2lPfVNnVwRbf1INEaZ1DZr12KE2zH5w7IZqyXKWA1SjYCBkpHj1oPNyd24yzSQ/exec',
@@ -13,7 +185,6 @@ document.addEventListener('DOMContentLoaded', () => {
         '16 - Itu': 'https://script.google.com/macros/s/AKfycbzz3XjqXVo9gl7KgYDNdzBHF89UID7xv-5ZUjBKTJc2277rqfEpdt-EfS8fJAIw_nfH/exec'
     };
 
-    // Elementos
     const lacreInput = document.getElementById('lacre');
     const confirmarLacreInput = document.getElementById('confirmar-lacre');
     const form = document.getElementById('lacreForm');
@@ -23,7 +194,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const historicoDiv = document.getElementById('listaHistorico');
     const trocarLojaBtn = document.getElementById('trocarLoja');
 
-    // ========== FUNÇÃO LOJA FIXA ==========
     function aplicarLojaFixa() {
         const lojaSalva = localStorage.getItem('lojaFixa');
         if (lojaSalva && lojaEndpoints[lojaSalva]) {
@@ -46,31 +216,30 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.removeItem('lojaFixa');
     });
 
-    // ========== FUNÇÃO histórico local ==========
     function atualizarHistorico() {
         const logs = JSON.parse(localStorage.getItem('ultimosLacres') || '[]');
-        if (!logs.length) {
+        if (logs.length === 0) {
             historicoDiv.innerHTML = '<div style="color:#A0AEC0; font-style:italic; font-size:11px; padding:5px;">Nenhum registro ainda</div>';
             return;
         }
-        historicoDiv.innerHTML = logs.slice(0,5).map(log => `
+        // pega apenas os 3 mais recentes
+        const ultimos3 = logs.slice(0, 3);
+        historicoDiv.innerHTML = ultimos3.map(log => `
             <div class="registro-grid">
-                <span><b>Lacre:</b> ${log.numero}</span>
-                <span><b>Op:</b> ${log.operador.split(' ')[0]}</span>
-                <span><b>Unid:</b> ${log.loja.split(' - ')[1] || log.loja}</span>
-                <span>${log.hora}</span>
+                <span>${log.data} ${log.hora}</span>
+                <span>${log.operador}</span>
+                <span><b>${log.numero}</b></span>
             </div>
         `).join('');
     }
 
-    // ========== Mostrar erro (desaparece após 5s) ==========
     function mostrarErro(mensagem) {
         mensagemErro.innerHTML = mensagem;
         mensagemErro.style.display = 'block';
         setTimeout(() => { mensagemErro.style.display = 'none'; }, 5000);
     }
 
-    // ========== Bloquear copia/cola ==========
+    // Bloquear copiar/colar
     const preventAction = (e) => {
         e.preventDefault();
         mostrarErro('⚠️ Copiar ou colar não é permitido. Digite o número.');
@@ -82,7 +251,6 @@ document.addEventListener('DOMContentLoaded', () => {
     lacreInput.addEventListener('contextmenu', (e) => e.preventDefault());
     confirmarLacreInput.addEventListener('contextmenu', (e) => e.preventDefault());
 
-    // ========== ENVIO DO FORMULÁRIO ==========
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         mensagemErro.style.display = 'none';
@@ -101,13 +269,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const appsScriptUrl = lojaEndpoints[loja];
         if (!appsScriptUrl) { mostrarErro('⚠️ Loja sem endpoint.'); return; }
 
-        // Salva a loja como fixa (se não estava fixa)
+        // Se a loja não estava fixada, agora fixa
         if (!lojaSelect.disabled) {
             localStorage.setItem('lojaFixa', loja);
             aplicarLojaFixa();
         }
 
-        const dados = { lacre, loja, operador, dataHora: new Date().toISOString() };
+        const now = new Date();
+        const hora = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const data = now.toLocaleDateString('pt-BR');
+        const dados = { lacre, loja, operador, dataHora: now.toISOString() };
 
         submitButton.disabled = true;
         submitButton.textContent = 'Registrando...';
@@ -119,24 +290,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(dados)
             });
 
-            // CORREÇÃO: consideramos sucesso mesmo se status não for 200,
-            // pois o Google Apps Script pode responder com redirecionamento 302 ou 200.
-            // Só mostramos erro se a rede falhar completamente.
             if (response.ok || response.status === 302 || response.status === 200) {
-                // Sucesso: salva no histórico local
-                const novoLog = {
-                    numero: lacre,
-                    operador: operador,
-                    loja: loja,
-                    hora: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})
-                };
+                // salvar no histórico local (sem a loja)
+                const novoLog = { numero: lacre, operador, hora, data };
                 let logs = JSON.parse(localStorage.getItem('ultimosLacres') || '[]');
                 logs.unshift(novoLog);
-                if (logs.length > 5) logs.pop();
+                if (logs.length > 3) logs.pop();
                 localStorage.setItem('ultimosLacres', JSON.stringify(logs));
                 atualizarHistorico();
 
-                // Mostra mensagem de sucesso no lugar do erro
+                // mensagem de sucesso (verde)
                 mensagemErro.style.backgroundColor = '#F0FFF4';
                 mensagemErro.style.color = '#2F855A';
                 mensagemErro.style.borderColor = '#C6F6D5';
@@ -144,19 +307,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 mensagemErro.style.display = 'block';
                 setTimeout(() => {
                     mensagemErro.style.display = 'none';
-                    // Reset estilo
                     mensagemErro.style.backgroundColor = '';
                     mensagemErro.style.color = '';
                     mensagemErro.style.borderColor = '';
                 }, 3000);
 
-                // Limpa formulário
+                // limpar campos
                 lacreInput.value = '';
                 confirmarLacreInput.value = '';
                 document.getElementById('operador').value = '';
                 lacreInput.focus();
             } else {
-                // Resposta inesperada, mas o envio pode ter funcionado. Registra silenciosamente.
                 console.warn('Resposta inesperada:', response.status);
                 mostrarErro(`⚠️ Enviado, mas resposta incomum (código ${response.status}). Dados devem estar na planilha.`);
             }
@@ -169,7 +330,76 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Inicializa cache e histórico
     aplicarLojaFixa();
     atualizarHistorico();
 });
+</script>
+
+<script>
+// ============================================================
+// SCRIPT DE SOLICITAÇÃO (inalterado)
+// ============================================================
+const URL_API_SOLICITACAO = "https://script.google.com/macros/s/AKfycbzUnBsMDJ0xxXcX_tJUxwLDpVgtK6PvpgvZ7KgTb-Zj2-q2FsekKDO11yZWHQXtTD3h/exec";
+
+const btnAbrir = document.getElementById("btnOpenSolicitacao");
+const modal = document.getElementById("modalSolicitacao");
+const btnFechar = document.querySelector(".close-modal");
+const formSolicitacao = document.getElementById("formSolicitacao");
+const msgRetorno = document.getElementById("msgRetorno");
+const btnEnviar = document.getElementById("btnEnviarSolicitacao");
+
+if(btnAbrir) {
+    btnAbrir.onclick = function() {
+        modal.style.display = "block";
+        msgRetorno.innerText = "";
+    }
+}
+if(btnFechar) {
+    btnFechar.onclick = function() {
+        modal.style.display = "none";
+    }
+}
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+if(formSolicitacao) {
+    formSolicitacao.onsubmit = function(event) {
+        event.preventDefault(); 
+        btnEnviar.innerText = "Enviando...";
+        btnEnviar.disabled = true;
+
+        const dados = {
+            loja: document.getElementById("solicitacaoLoja").value,
+            solicitante: document.getElementById("solicitacaoNome").value,
+            obs: document.getElementById("solicitacaoObs").value
+        };
+
+        fetch(URL_API_SOLICITACAO, {
+            method: "POST",
+            body: JSON.stringify(dados)
+        })
+        .then(response => {
+            msgRetorno.style.color = "green";
+            msgRetorno.innerText = "✅ Pedido enviado com sucesso!";
+            formSolicitacao.reset();
+            setTimeout(() => {
+                btnEnviar.innerText = "Enviar Pedido";
+                btnEnviar.disabled = false;
+                modal.style.display = "none";
+                msgRetorno.innerText = "";
+            }, 2000);
+        })
+        .catch(error => {
+            console.error("Erro:", error);
+            msgRetorno.style.color = "red";
+            msgRetorno.innerText = "❌ Erro ao enviar.";
+            btnEnviar.innerText = "Enviar Pedido";
+            btnEnviar.disabled = false;
+        });
+    };
+}
+</script>
+</body>
+</html>
