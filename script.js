@@ -57,8 +57,6 @@
             border: 1px solid #E2E8F0;
             border-radius: 8px;
             padding: 8px;
-            height: auto;  /* sem scroll, altura ajustável */
-            overflow: visible;
         }
         .historico-titulo {
             font-weight: 700;
@@ -69,7 +67,7 @@
         }
         .registro-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr; /* data/hora | operador | lacre */
+            grid-template-columns: 1fr 1fr 1fr;
             gap: 10px;
             font-size: 11px;
             padding: 6px 8px;
@@ -169,9 +167,7 @@
 </div>
 
 <script>
-// ============================================================
-// SCRIPT PRINCIPAL (cache, histórico, envio)
-// ============================================================
+// ========== SCRIPT PRINCIPAL (CACHE + HISTÓRICO + ENVIO) ==========
 document.addEventListener('DOMContentLoaded', () => {
     const lojaEndpoints = {
         '02 - Morada': 'https://script.google.com/macros/s/AKfycbzNEaGuuffVK7oD5kcyJDEcFxWCM2k_6JrbRWkfFQ0_VwKThTqosy45F84-TbVrmyhRlg/exec',
@@ -186,14 +182,16 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const lacreInput = document.getElementById('lacre');
-    const confirmarLacreInput = document.getElementById('confirmar-lacre');
-    const form = document.getElementById('lacreForm');
+    const confirmarInput = document.getElementById('confirmar-lacre');
     const lojaSelect = document.getElementById('loja');
-    const mensagemErro = document.getElementById('mensagem-erro');
-    const submitButton = form.querySelector('button[type="submit"]');
+    const operadorInput = document.getElementById('operador');
+    const form = document.getElementById('lacreForm');
+    const msgErro = document.getElementById('mensagem-erro');
+    const submitBtn = form.querySelector('button[type="submit"]');
     const historicoDiv = document.getElementById('listaHistorico');
     const trocarLojaBtn = document.getElementById('trocarLoja');
 
+    // === Loja fixa ===
     function aplicarLojaFixa() {
         const lojaSalva = localStorage.getItem('lojaFixa');
         if (lojaSalva && lojaEndpoints[lojaSalva]) {
@@ -216,13 +214,13 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.removeItem('lojaFixa');
     });
 
+    // === Histórico (apenas 3 registros) ===
     function atualizarHistorico() {
         const logs = JSON.parse(localStorage.getItem('ultimosLacres') || '[]');
         if (logs.length === 0) {
             historicoDiv.innerHTML = '<div style="color:#A0AEC0; font-style:italic; font-size:11px; padding:5px;">Nenhum registro ainda</div>';
             return;
         }
-        // pega apenas os 3 mais recentes
         const ultimos3 = logs.slice(0, 3);
         historicoDiv.innerHTML = ultimos3.map(log => `
             <div class="registro-grid">
@@ -233,173 +231,155 @@ document.addEventListener('DOMContentLoaded', () => {
         `).join('');
     }
 
-    function mostrarErro(mensagem) {
-        mensagemErro.innerHTML = mensagem;
-        mensagemErro.style.display = 'block';
-        setTimeout(() => { mensagemErro.style.display = 'none'; }, 5000);
+    function mostrarMensagem(texto, tipo = 'erro') {
+        msgErro.style.display = 'block';
+        if (tipo === 'erro') {
+            msgErro.style.backgroundColor = '#FFF5F5';
+            msgErro.style.color = '#C53030';
+            msgErro.style.borderColor = '#FED7D7';
+        } else {
+            msgErro.style.backgroundColor = '#F0FFF4';
+            msgErro.style.color = '#2F855A';
+            msgErro.style.borderColor = '#C6F6D5';
+        }
+        msgErro.innerHTML = texto;
+        setTimeout(() => {
+            msgErro.style.display = 'none';
+        }, 4000);
     }
 
     // Bloquear copiar/colar
     const preventAction = (e) => {
         e.preventDefault();
-        mostrarErro('⚠️ Copiar ou colar não é permitido. Digite o número.');
+        mostrarMensagem('⚠️ Copiar ou colar não é permitido. Digite o número.', 'erro');
     };
     lacreInput.addEventListener('paste', preventAction);
-    confirmarLacreInput.addEventListener('paste', preventAction);
+    confirmarInput.addEventListener('paste', preventAction);
     lacreInput.addEventListener('cut', preventAction);
-    confirmarLacreInput.addEventListener('cut', preventAction);
+    confirmarInput.addEventListener('cut', preventAction);
     lacreInput.addEventListener('contextmenu', (e) => e.preventDefault());
-    confirmarLacreInput.addEventListener('contextmenu', (e) => e.preventDefault());
+    confirmarInput.addEventListener('contextmenu', (e) => e.preventDefault());
 
+    // Envio do formulário
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        mensagemErro.style.display = 'none';
-
         const lacre = lacreInput.value.trim();
-        const confirmar = confirmarLacreInput.value.trim();
+        const confirmar = confirmarInput.value.trim();
         const loja = lojaSelect.value;
-        const operador = document.getElementById('operador').value.trim();
+        const operador = operadorInput.value.trim();
 
-        if (!loja) { mostrarErro('⚠️ Selecione a loja.'); return; }
-        if (lacre !== confirmar) {
-            mostrarErro('⚠️ Os números do lacre não conferem.');
-            return;
-        }
+        if (!loja) { mostrarMensagem('⚠️ Selecione a loja.', 'erro'); return; }
+        if (!lacre || !confirmar || !operador) { mostrarMensagem('⚠️ Preencha todos os campos.', 'erro'); return; }
+        if (lacre !== confirmar) { mostrarMensagem('⚠️ Os números do lacre não conferem.', 'erro'); return; }
 
-        const appsScriptUrl = lojaEndpoints[loja];
-        if (!appsScriptUrl) { mostrarErro('⚠️ Loja sem endpoint.'); return; }
+        const endpoint = lojaEndpoints[loja];
+        if (!endpoint) { mostrarMensagem('⚠️ Loja sem endpoint configurado.', 'erro'); return; }
 
-        // Se a loja não estava fixada, agora fixa
         if (!lojaSelect.disabled) {
             localStorage.setItem('lojaFixa', loja);
             aplicarLojaFixa();
         }
 
-        const now = new Date();
-        const hora = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        const data = now.toLocaleDateString('pt-BR');
-        const dados = { lacre, loja, operador, dataHora: now.toISOString() };
+        const agora = new Date();
+        const hora = agora.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const data = agora.toLocaleDateString('pt-BR');
 
-        submitButton.disabled = true;
-        submitButton.textContent = 'Registrando...';
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Registrando...';
 
         try {
-            const response = await fetch(appsScriptUrl, {
+            const response = await fetch(endpoint, {
                 method: 'POST',
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify(dados)
+                body: JSON.stringify({ lacre, loja, operador, dataHora: agora.toISOString() })
             });
 
-            if (response.ok || response.status === 302 || response.status === 200) {
-                // salvar no histórico local (sem a loja)
-                const novoLog = { numero: lacre, operador, hora, data };
-                let logs = JSON.parse(localStorage.getItem('ultimosLacres') || '[]');
-                logs.unshift(novoLog);
+            if (response.ok || response.status === 302) {
+                // Salva histórico
+                const logs = JSON.parse(localStorage.getItem('ultimosLacres') || '[]');
+                logs.unshift({ numero: lacre, operador, hora, data });
                 if (logs.length > 3) logs.pop();
                 localStorage.setItem('ultimosLacres', JSON.stringify(logs));
                 atualizarHistorico();
 
-                // mensagem de sucesso (verde)
-                mensagemErro.style.backgroundColor = '#F0FFF4';
-                mensagemErro.style.color = '#2F855A';
-                mensagemErro.style.borderColor = '#C6F6D5';
-                mensagemErro.innerHTML = '✅ Lacre registrado com sucesso!';
-                mensagemErro.style.display = 'block';
-                setTimeout(() => {
-                    mensagemErro.style.display = 'none';
-                    mensagemErro.style.backgroundColor = '';
-                    mensagemErro.style.color = '';
-                    mensagemErro.style.borderColor = '';
-                }, 3000);
-
-                // limpar campos
+                mostrarMensagem('✅ Lacre registrado com sucesso!', 'sucesso');
                 lacreInput.value = '';
-                confirmarLacreInput.value = '';
-                document.getElementById('operador').value = '';
+                confirmarInput.value = '';
+                operadorInput.value = '';
                 lacreInput.focus();
             } else {
-                console.warn('Resposta inesperada:', response.status);
-                mostrarErro(`⚠️ Enviado, mas resposta incomum (código ${response.status}). Dados devem estar na planilha.`);
+                mostrarMensagem(`⚠️ Resposta inesperada (${response.status}). Dados podem ter sido salvos.`, 'erro');
             }
         } catch (error) {
             console.error(error);
-            mostrarErro('⚠️ Erro de conexão. Verifique a internet e tente novamente.');
+            mostrarMensagem('⚠️ Erro de conexão. Tente novamente.', 'erro');
         } finally {
-            submitButton.disabled = false;
-            submitButton.textContent = 'REGISTRAR LACRE';
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'REGISTRAR LACRE';
         }
     });
 
     aplicarLojaFixa();
     atualizarHistorico();
 });
-</script>
 
-<script>
-// ============================================================
-// SCRIPT DE SOLICITAÇÃO (inalterado)
-// ============================================================
-const URL_API_SOLICITACAO = "https://script.google.com/macros/s/AKfycbzUnBsMDJ0xxXcX_tJUxwLDpVgtK6PvpgvZ7KgTb-Zj2-q2FsekKDO11yZWHQXtTD3h/exec";
+// ========== MODAL DE SOLICITAÇÃO (separado, sem conflito) ==========
+document.addEventListener('DOMContentLoaded', () => {
+    const URL_API_SOLICITACAO = "https://script.google.com/macros/s/AKfycbzUnBsMDJ0xxXcX_tJUxwLDpVgtK6PvpgvZ7KgTb-Zj2-q2FsekKDO11yZWHQXtTD3h/exec";
+    const btnAbrir = document.getElementById("btnOpenSolicitacao");
+    const modal = document.getElementById("modalSolicitacao");
+    const btnFechar = document.querySelector(".close-modal");
+    const formSolicitacao = document.getElementById("formSolicitacao");
+    const msgRetorno = document.getElementById("msgRetorno");
+    const btnEnviar = document.getElementById("btnEnviarSolicitacao");
 
-const btnAbrir = document.getElementById("btnOpenSolicitacao");
-const modal = document.getElementById("modalSolicitacao");
-const btnFechar = document.querySelector(".close-modal");
-const formSolicitacao = document.getElementById("formSolicitacao");
-const msgRetorno = document.getElementById("msgRetorno");
-const btnEnviar = document.getElementById("btnEnviarSolicitacao");
-
-if(btnAbrir) {
-    btnAbrir.onclick = function() {
-        modal.style.display = "block";
-        msgRetorno.innerText = "";
-    }
-}
-if(btnFechar) {
-    btnFechar.onclick = function() {
-        modal.style.display = "none";
-    }
-}
-window.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
-  }
-}
-if(formSolicitacao) {
-    formSolicitacao.onsubmit = function(event) {
-        event.preventDefault(); 
-        btnEnviar.innerText = "Enviando...";
-        btnEnviar.disabled = true;
-
-        const dados = {
-            loja: document.getElementById("solicitacaoLoja").value,
-            solicitante: document.getElementById("solicitacaoNome").value,
-            obs: document.getElementById("solicitacaoObs").value
+    if (btnAbrir) {
+        btnAbrir.onclick = () => {
+            modal.style.display = "block";
+            if (msgRetorno) msgRetorno.innerText = "";
         };
-
-        fetch(URL_API_SOLICITACAO, {
-            method: "POST",
-            body: JSON.stringify(dados)
-        })
-        .then(response => {
-            msgRetorno.style.color = "green";
-            msgRetorno.innerText = "✅ Pedido enviado com sucesso!";
-            formSolicitacao.reset();
-            setTimeout(() => {
+    }
+    if (btnFechar) {
+        btnFechar.onclick = () => modal.style.display = "none";
+    }
+    window.onclick = (event) => {
+        if (event.target === modal) modal.style.display = "none";
+    };
+    if (formSolicitacao) {
+        formSolicitacao.onsubmit = (event) => {
+            event.preventDefault();
+            btnEnviar.innerText = "Enviando...";
+            btnEnviar.disabled = true;
+            const dados = {
+                loja: document.getElementById("solicitacaoLoja").value,
+                solicitante: document.getElementById("solicitacaoNome").value,
+                obs: document.getElementById("solicitacaoObs").value
+            };
+            fetch(URL_API_SOLICITACAO, {
+                method: "POST",
+                body: JSON.stringify(dados)
+            })
+            .then(() => {
+                msgRetorno.style.color = "green";
+                msgRetorno.innerText = "✅ Pedido enviado com sucesso!";
+                formSolicitacao.reset();
+                setTimeout(() => {
+                    btnEnviar.innerText = "Enviar Pedido";
+                    btnEnviar.disabled = false;
+                    modal.style.display = "none";
+                    msgRetorno.innerText = "";
+                }, 2000);
+            })
+            .catch(error => {
+                console.error("Erro:", error);
+                msgRetorno.style.color = "red";
+                msgRetorno.innerText = "❌ Erro ao enviar.";
                 btnEnviar.innerText = "Enviar Pedido";
                 btnEnviar.disabled = false;
-                modal.style.display = "none";
-                msgRetorno.innerText = "";
-            }, 2000);
-        })
-        .catch(error => {
-            console.error("Erro:", error);
-            msgRetorno.style.color = "red";
-            msgRetorno.innerText = "❌ Erro ao enviar.";
-            btnEnviar.innerText = "Enviar Pedido";
-            btnEnviar.disabled = false;
-        });
-    };
-}
+            });
+        };
+    }
+});
 </script>
 </body>
 </html>
