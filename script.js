@@ -55,10 +55,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         historicoDiv.innerHTML = logs.slice(0,5).map(log => `
             <div class="registro-grid">
-                <span><b>Lacre:</b> ${log.numero}</span>
-                <span><b>Op:</b> ${log.operador.split(' ')[0]}</span>
-                <span><b>Unid:</b> ${log.loja.split(' - ')[1] || log.loja}</span>
-                <span>${log.hora}</span>
+                <span><b>Lacre:</b> ${log.numero || '-'}</span>
+                <span><b>Op:</b> ${log.operador ? log.operador.split(' ')[0] : '-'}</span>
+                <span><b>Unid:</b> ${log.loja ? (log.loja.split(' - ')[1] || log.loja) : '-'}</span>
+                <span>${log.hora || '-'}</span>
             </div>
         `).join('');
     }
