@@ -34,7 +34,6 @@ document.addEventListener('DOMContentLoaded', function() {
         formSolicitacao.onsubmit = function(event) {
             event.preventDefault(); 
 
-            // Pega o botão de envio sem depender de ID
             const btnEnviar = formSolicitacao.querySelector('button[type="submit"]');
 
             if(btnEnviar) {
@@ -48,8 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 obs: document.getElementById("solicitacaoObs").value
             };
 
-            // Mantido igual ao original: SEM cabeçalhos.
-            // O navegador envia como texto simples nativamente e ignora o CORS.
+            // Envio direto sem headers para contornar o CORS do Apps Script
             fetch(URL_API_SOLICITACAO, {
                 method: "POST",
                 body: JSON.stringify(dados)
