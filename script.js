@@ -53,11 +53,11 @@ document.addEventListener('DOMContentLoaded', () => {
             historicoDiv.innerHTML = '<div style="color:#A0AEC0; font-style:italic; font-size:11px; padding:5px;">Nenhum registro ainda</div>';
             return;
         }
-        historicoDiv.innerHTML = logs.slice(0,3).map(log => `
+        // Exibe apenas os 3 últimos e removeu a coluna "Unid"
+        historicoDiv.innerHTML = logs.slice(0, 3).map(log => `
             <div class="registro-grid">
                 <span><b>Lacre:</b> ${log.numero || '-'}</span>
                 <span><b>Op:</b> ${log.operador ? log.operador.split(' ')[0] : '-'}</span>
-                <span><b>Unid:</b> ${log.loja ? (log.loja.split(' - ')[1] || log.loja) : '-'}</span>
                 <span>${log.hora || '-'}</span>
             </div>
         `).join('');
