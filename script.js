@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
             historicoDiv.innerHTML = '<div style="color:#A0AEC0; font-style:italic; font-size:11px; padding:5px;">Nenhum registro ainda</div>';
             return;
         }
-        historicoDiv.innerHTML = logs.slice(0,5).map(log => `
+        historicoDiv.innerHTML = logs.slice(0,3).map(log => `
             <div class="registro-grid">
                 <span><b>Lacre:</b> ${log.numero || '-'}</span>
                 <span><b>Op:</b> ${log.operador ? log.operador.split(' ')[0] : '-'}</span>
@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
                 let logs = JSON.parse(localStorage.getItem('ultimosLacres') || '[]');
                 logs.unshift(novoLog);
-                if (logs.length > 5) logs.pop();
+                if (logs.length > 3) logs.pop();
                 localStorage.setItem('ultimosLacres', JSON.stringify(logs));
                 atualizarHistorico();
 
