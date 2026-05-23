@@ -169,6 +169,23 @@
 
 <script src="script.js"></script>
 <script src="solicitacao.js"></script>
+<script>
+    // Detecta se a URL foi chamada pelo novo painel
+    if (window.location.search.includes('modo=painel')) {
+        // Seletor genérico: ajuste conforme a classe ou ID do header de cada projeto
+        const cabecalho = document.querySelector('header') || document.querySelector('.header') || document.querySelector('.top-bar');
+        
+        if (cabecalho) {
+            cabecalho.style.display = 'none';
+        }
 
+        // Aplica o mesmo fundo do painel principal e zera margens externas
+        document.body.style.backgroundColor = '#f8fafc'; 
+        document.body.style.margin = '0';
+        
+        // Mantém um pequeno padding para o formulário não grudar na borda do iframe
+        document.body.style.padding = '20px';
+    }
+</script>
 </body>
 </html>
