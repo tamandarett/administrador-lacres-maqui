@@ -29,10 +29,34 @@
         }
         .logo-container img { max-width: 120px; margin-bottom: 5px; }
         h1 { font-size: 18px; margin: 0 0 15px 0; color: #4A5568; font-weight: 700; }
+        .alerta-box {
+            padding: 10px 14px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-weight: 600;
+            font-size: 13px;
+            display: none;
+            text-align: center;
+            transition: all 0.2s ease-in-out;
+        }
         .alerta-erro {
             background: #FFF5F5; color: #C53030; border: 1px solid #FED7D7;
-            padding: 8px; border-radius: 6px; margin-bottom: 15px;
-            font-weight: 600; font-size: 13px; display: none;
+        }
+        .alerta-sucesso {
+            background: #F0FFF4; color: #276749; border: 1px solid #C6F6D5;
+        }
+        .alerta-aviso {
+            background: #FFFAF0; color: #DD6B20; border: 1px solid #FEEBC8;
+        }
+        .badge-pendente {
+            display: inline-block;
+            background: #FEFCBF;
+            color: #744210;
+            font-size: 9px;
+            padding: 1px 4px;
+            border-radius: 3px;
+            margin-left: 4px;
+            font-weight: bold;
         }
         .form-row { display: flex; gap: 25px; text-align: left; margin-bottom: 5px; }
         .column { flex: 1; }
@@ -98,7 +122,7 @@
 <div class="container">
     <div class="logo-container"><img src="logo-tamandare.png" alt="Logo"></div>
     <h1>Registro de Lacre</h1>
-    <div id="mensagem-erro" class="alerta-erro"></div>
+    <div id="mensagem-erro" class="alerta-box"></div>
     <form id="lacreForm" autocomplete="off">
         <div class="form-row">
             <div class="column">
